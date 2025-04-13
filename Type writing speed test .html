@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Battle</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #818cf8;
+            --background: #f3f4f6;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .text-display {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            min-height: 150px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            resize: none;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .correct {
+            color: #059669;
+            background: #d1fae5;
+        }
+
+        .incorrect {
+            color: #dc2626;
+            background: #fee2e2;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--secondary);
+        }
+
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .ghost-indicator {
+            position: relative;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .ghost-progress {
+            position: absolute;
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .player-progress {
+            position: absolute;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        #chart {
+            margin-top: 2rem;
+            height: 200px;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⌨️ Typing Speed Battle</h1>
+            <p>Race against the ghost of your best performance!</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div>WPM</div>
+                <div id="wpm" class="stat-value">0</div>
+            </div>
+            <div class="stat-box">
+                <div>Accuracy</div>
+                <div id="accuracy" class="stat-value">0%</div>
+            </div>
+            <div class="stat-box">
+                <div>Time</div>
+                <div id="time" class="stat-value">60s</div>
+            </div>
+        </div>
+
+        <div class="ghost-indicator">
+            <div id="ghostProgress" class="ghost-progress"></div>
+            <div id="playerProgress" class="player-progress"></div>
+        </div>
+
+        <div id="textDisplay" class="text-display"></div>
+        <textarea id="textInput" class="text-input" rows="3" disabled></textarea>
+
+        <div class="buttons">
+            <button id="startButton" onclick="startGame()">
+                <i class="fas fa-play"></i> Start Game
+            </button>
+            <button id="resetButton" onclick="resetGame()" disabled>
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        const texts =[
+         "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet at least once. Jackdaws love my big sphinx of quartz.",
+         "Programming is the art of telling another human what one wants the computer to do. It requires logical thinking and creative problem-solving skills.",
+         "In the world of competitive typing, speed and accuracy are equally important. The best typists maintain a steady rhythm while keeping their error rate low.",
+         "The science of today is the technology of tomorrow. We cannot solve our problems with the same thinking we used when we created them.",
+         "Artificial intelligence is not just about machines thinking like humans; it’s about enabling systems to solve problems we once thought only people could handle.",
+         "Typing quickly is not merely about muscle memory—it’s a harmony of precision, timing, and thoughtful repetition.",
+         "Debugging is like being a detective in a crime movie where you're both the criminal and the investigator, tracing your own steps through lines of code.",
+         "Knowledge is knowing a tomato is a fruit; wisdom is knowing not to put it in a fruit salad.",
+         "Zebras zigzag through the jungle, evading predators with agility and grace, showcasing nature’s design in full motion.",
+         "The five boxing wizards jump quickly, forming a pangram with flair and brevity that’s perfect for typing tests.",
+         "While the keyboard may seem like a mundane tool, in the right hands it becomes an instrument of creativity, logic, and expression.",
+         "A journey of a thousand miles begins with a single step, but perseverance and purpose are what carry us to the destination.",
+         "The best way to predict the future is to invent it, a mantra embraced by visionaries and creators of the digital age.",
+         "She packed my box with five dozen liquor jugs, a quirky sentence often used to test typewriters and keyboards for responsiveness."
+         ];
+
+        let currentText = '';
+        let timeLeft = 60;
+        let timer = null;
+        let isPlaying = false;
+        let startTime = null;
+        let wpmHistory = [];
+        let ghostData = JSON.parse(localStorage.getItem('bestGhost')) || [];
+        let currentWPM = 0;
+        let mistakes = 0;
+        let totalChars = 0;
+
+        const textDisplay = document.getElementById('textDisplay');
+        const textInput = document.getElementById('textInput');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const timeDisplay = document.getElementById('time');
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const ghostProgress = document.getElementById('ghostProgress');
+        const playerProgress = document.getElementById('playerProgress');
+
+        function startGame() {
+            currentText = texts[Math.floor(Math.random() * texts.length)];
+            textDisplay.textContent = currentText;
+            textInput.value = '';
+            textInput.disabled = false;
+            textInput.focus();
+            startButton.disabled = true;
+            resetButton.disabled = false;
+            isPlaying = true;
+            startTime = Date.now();
+            mistakes = 0;
+            totalChars = 0;
+            wpmHistory = [];
+
+            timeLeft = 60;
+            timer = setInterval(() => {
+                timeLeft--;
+                timeDisplay.textContent = timeLeft + 's';
+                updateWPM();
+                updateGhostPosition();
+
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function resetGame() {
+            clearInterval(timer);
+            timeLeft = 60;
+            isPlaying = false;
+            textInput.value = '';
+            textInput.disabled = true;
+            startButton.disabled = false;
+            resetButton.disabled = true;
+            timeDisplay.textContent = '60s';
+            wpmDisplay.textContent = '0';
+            accuracyDisplay.textContent = '0%';
+            ghostProgress.style.width = '0%';
+            playerProgress.style.width = '0%';
+            textDisplay.textContent = 'Click Start Game to begin!';
+        }
+
+        function updateWPM() {
+            const timePassed = (Date.now() - startTime) / 1000 / 60;
+            const wordsTyped = textInput.value.trim().split(' ').length;
+            currentWPM = Math.round(wordsTyped / timePassed);
+            wpmDisplay.textContent = currentWPM;
+            wpmHistory.push(currentWPM);
+
+            const accuracy = Math.round(((totalChars - mistakes) / totalChars) * 100) || 0;
+            accuracyDisplay.textContent = accuracy + '%';
+        }
+
+        function updateGhostPosition() {
+            if (ghostData.length > 0) {
+                const ghostWPM = ghostData[60 - timeLeft] || 0;
+                const ghostProgress = (ghostWPM / 100) * 100;
+                document.getElementById('ghostProgress').style.width = ghostProgress + '%';
+            }
+
+            const playerProgress = (currentWPM / 100) * 100;
+            document.getElementById('playerProgress').style.width = playerProgress + '%';
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            isPlaying = false;
+            textInput.disabled = true;
+            startButton.disabled = false;
+
+            if (!ghostData.length || Math.max(...wpmHistory) > Math.max(...ghostData)) {
+                localStorage.setItem('bestGhost', JSON.stringify(wpmHistory));
+                ghostData = wpmHistory;
+                alert('New High Score! 🎉');
+            }
+        }
+
+        textInput.addEventListener('input', (e) => {
+            if (!isPlaying) return;
+
+            const inputText = e.target.value;
+            totalChars = inputText.length;
+            mistakes = 0;
+
+            for (let i = 0; i < inputText.length; i++) {
+                if (inputText[i] !== currentText[i]) {
+                    mistakes++;
+                }
+            }
+
+            if (inputText === currentText) {
+                endGame();
+            }
+
+            const accuracy = Math.max(0, Math.round(((totalChars - mistakes) / totalChars) * 100)) || 0;
+            accuracyDisplay.textContent = accuracy + '%';
+        });
+
+        resetGame();
+    </script>
+</body>
+</html>

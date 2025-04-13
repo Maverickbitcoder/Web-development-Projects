@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        .dark-mode .bg-white {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        .skill-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .skill-progress {
+            height: 100%;
+            background: #4f46e5;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-indigo-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-indigo-700 mb-4">Professional Resume Builder</h1>
+            <p class="text-gray-600">Create a stunning resume in minutes</p>
+            <div class="flex justify-center gap-4 mt-4">
+                <button onclick="toggleDarkMode()" class="px-4 py-2 bg-gray-200 rounded-lg">
+                    <i class="fas fa-moon"></i> Toggle Dark Mode
+                </button>
+                <select id="themeColor" onchange="changeTheme()" class="px-4 py-2 rounded-lg">
+                    <option value="indigo">Indigo</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="purple">Purple</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Input Form -->
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <form id="resumeForm" class="space-y-8">
+                    <!-- Profile Picture -->
+                    <div class="space-y-4 text-center">
+                        <div class="w-32 h-32 mx-auto bg-gray-200 rounded-full overflow-hidden">
+                            <img id="profilePreview" class="w-full h-full object-cover" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" alt="Profile">
+                        </div>
+                        <input type="file" id="profilePicture" accept="image/*" class="hidden" onchange="previewImage(event)">
+                        <button onclick="document.getElementById('profilePicture').click()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                            Upload Photo
+                        </button>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-user mr-2"></i>Personal Information
+                        </h2>
+                        <input type="text" id="fullName" placeholder="Full Name" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <input type="email" id="email" placeholder="Email" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <input type="tel" id="phone" placeholder="Phone" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <textarea id="summary" placeholder="Professional Summary" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 h-32"></textarea>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-link mr-2"></i>Social Media & Portfolio
+                        </h2>
+                        <input type="url" id="linkedin" placeholder="LinkedIn URL" class="w-full p-3 border rounded-lg">
+                        <input type="url" id="github" placeholder="GitHub URL" class="w-full p-3 border rounded-lg">
+                        <input type="url" id="portfolio" placeholder="Portfolio Website" class="w-full p-3 border rounded-lg">
+                    </div>
+
+                    <!-- Education -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-graduation-cap mr-2"></i>Education
+                        </h2>
+                        <div id="educationList" class="space-y-4">
+                            <div class="education-entry space-y-2 p-4 border rounded-lg">
+                                <input type="text" placeholder="Degree/Course" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Institution" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Year" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="GPA/Achievements" class="w-full p-3 border rounded-lg">
+                            </div>
+                        </div>
+                        <button type="button" onclick="addEducation()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Education
+                        </button>
+                    </div>
+
+                    <!-- Certifications -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-certificate mr-2"></i>Certifications
+                        </h2>
+                        <div id="certificationList" class="space-y-4">
+                            <div class="certification-entry space-y-2 p-4 border rounded-lg">
+                                <input type="text" placeholder="Certification Name" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Issuing Organization" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Year" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Credential ID" class="w-full p-3 border rounded-lg">
+                            </div>
+                        </div>
+                        <button type="button" onclick="addCertification()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Certification
+                        </button>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-briefcase mr-2"></i>Experience
+                        </h2>
+                        <div id="experienceList" class="space-y-4">
+                            <div class="experience-entry space-y-2 p-4 border rounded-lg">
+                                <input type="text" placeholder="Position" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Company" class="w-full p-3 border rounded-lg">
+                                <input type="text" placeholder="Duration" class="w-full p-3 border rounded-lg">
+                                <textarea placeholder="Key Achievements & Responsibilities" class="w-full p-3 border rounded-lg h-24"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addExperience()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Experience
+                        </button>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-tools mr-2"></i>Skills
+                        </h2>
+                        <textarea id="skills" placeholder="Enter your skills (comma separated)" class="w-full p-3 border rounded-lg h-24"></textarea>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-project-diagram mr-2"></i>Projects
+                        </h2>
+                        <div id="projectList" class="space-y-4"></div>
+                        <button type="button" onclick="addProject()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Project
+                        </button>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-language mr-2"></i>Languages
+                        </h2>
+                        <div id="languageList" class="space-y-4"></div>
+                        <button type="button" onclick="addLanguage()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Language
+                        </button>
+                    </div>
+
+                    <!-- References -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-user-tie mr-2"></i>References
+                        </h2>
+                        <div id="referenceList" class="space-y-4"></div>
+                        <button type="button" onclick="addReference()" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Add Reference
+                        </button>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="space-y-4">
+                        <h2 class="text-2xl font-semibold text-indigo-700 flex items-center">
+                            <i class="fas fa-trophy mr-2"></i>Achievements
+                        </h2>
+                        <textarea id="achievements" placeholder="List your key achievements" class="w-full p-3 border rounded-lg h-24"></textarea>
+                    </div>
+
+                    <div class="flex gap-4 mb-6">
+                        <button type="button" onclick="saveDraft()" class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save Draft
+                        </button>
+                        <button type="button" onclick="loadDraft()" class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-folder-open mr-2"></i>Load Draft
+                        </button>
+                        <button type="button" onclick="resetForm()" class="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Reset Form
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="generateResume()" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-magic mr-2"></i>Generate Resume
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview -->
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <div id="resumePreview" class="space-y-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-indigo-700">Resume Preview</h2>
+                        <button onclick="downloadResume()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center">
+                            <i class="fas fa-download mr-2"></i>Download PDF
+                        </button>
+                    </div>
+                    <div id="previewContent" class="space-y-6 sortable-sections">
+                        <!-- Preview content will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Support
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function changeTheme() {
+            const color = document.getElementById('themeColor').value;
+            const root = document.documentElement;
+            root.style.setProperty('--theme-color', color);
+        }
+
+        // Profile Picture Preview
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Autosave functionality
+        function saveToLocalStorage() {
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                summary: document.getElementById('summary').value,
+                skills: document.getElementById('skills').value,
+                // Add other fields as needed
+            };
+            localStorage.setItem('resumeData', JSON.stringify(formData));
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('resumeData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                document.getElementById('fullName').value = formData.fullName || '';
+                document.getElementById('email').value = formData.email || '';
+                document.getElementById('phone').value = formData.phone || '';
+                document.getElementById('summary').value = formData.summary || '';
+                document.getElementById('skills').value = formData.skills || '';
+                // Restore other fields as needed
+            }
+        }
+
+        // Initialize autosave
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('input', saveToLocalStorage);
+        });
+
+        // Load saved data when page loads
+        window.addEventListener('load', () => {
+            loadFromLocalStorage();
+            // Initialize drag and drop
+            new Sortable(document.querySelector('.sortable-sections'), {
+                animation: 150,
+                handle: '.section-handle',
+                onEnd: function() {
+                    generateResume(); // Refresh preview after reordering
+                }
+            });
+        });
+
+        function addEducation() {
+            const educationList = document.getElementById('educationList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'education-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Degree/Course" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Institution" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Year" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="GPA/Achievements" class="w-full p-3 border rounded-lg">
+            `;
+            educationList.appendChild(newEntry);
+        }
+
+        function addCertification() {
+            const certificationList = document.getElementById('certificationList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'certification-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Certification Name" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Issuing Organization" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Year" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Credential ID" class="w-full p-3 border rounded-lg">
+            `;
+            certificationList.appendChild(newEntry);
+        }
+
+        function addExperience() {
+            const experienceList = document.getElementById('experienceList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'experience-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Position" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Company" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Duration" class="w-full p-3 border rounded-lg">
+                <textarea placeholder="Key Achievements & Responsibilities" class="w-full p-3 border rounded-lg h-24"></textarea>
+            `;
+            experienceList.appendChild(newEntry);
+        }
+
+        function addProject() {
+            const projectList = document.getElementById('projectList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'project-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Project Title" class="w-full p-3 border rounded-lg">
+                <textarea placeholder="Description" class="w-full p-3 border rounded-lg h-16"></textarea>
+                <input type="text" placeholder="Tech Stack" class="w-full p-3 border rounded-lg">
+                <input type="url" placeholder="Project Link" class="w-full p-3 border rounded-lg">
+            `;
+            projectList.appendChild(newEntry);
+        }
+
+        function addLanguage() {
+            const languageList = document.getElementById('languageList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'language-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Language" class="w-full p-3 border rounded-lg">
+                <select class="w-full p-3 border rounded-lg">
+                    <option value="native">Native</option>
+                    <option value="fluent">Fluent</option>
+                    <option value="conversational">Conversational</option>
+                    <option value="basic">Basic</option>
+                </select>
+            `;
+            languageList.appendChild(newEntry);
+        }
+
+        function addReference() {
+            const referenceList = document.getElementById('referenceList');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'reference-entry space-y-2 p-4 border rounded-lg';
+            newEntry.innerHTML = `
+                <input type="text" placeholder="Name" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Designation" class="w-full p-3 border rounded-lg">
+                <input type="text" placeholder="Contact Info" class="w-full p-3 border rounded-lg">
+            `;
+            referenceList.appendChild(newEntry);
+        }
+
+        function generateResume() {
+            const previewContent = document.getElementById('previewContent');
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const summary = document.getElementById('summary').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const github = document.getElementById('github').value;
+            const portfolio = document.getElementById('portfolio').value;
+            const skills = document.getElementById('skills').value;
+            const achievements = document.getElementById('achievements').value;
+
+            let socialLinks = '';
+            if (linkedin || github || portfolio) {
+                socialLinks = `
+                    <div class="mb-4">
+                        ${linkedin ? `<a href="${linkedin}" class="text-indigo-600 mr-4"><i class="fab fa-linkedin"></i> LinkedIn</a>` : ''}
+                        ${github ? `<a href="${github}" class="text-indigo-600 mr-4"><i class="fab fa-github"></i> GitHub</a>` : ''}
+                        ${portfolio ? `<a href="${portfolio}" class="text-indigo-600"><i class="fas fa-globe"></i> Portfolio</a>` : ''}
+                    </div>
+                `;
+            }
+
+            let educationHTML = '';
+            document.querySelectorAll('.education-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input');
+                educationHTML += `
+                    <div class="mb-3">
+                        <div class="font-semibold text-lg">${inputs[0].value}</div>
+                        <div class="text-gray-700">${inputs[1].value}</div>
+                        <div class="text-gray-600">${inputs[2].value}</div>
+                        <div class="text-gray-600 italic">${inputs[3].value}</div>
+                    </div>
+                `;
+            });
+
+            let certificationHTML = '';
+            document.querySelectorAll('.certification-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input');
+                certificationHTML += `
+                    <div class="mb-3">
+                        <div class="font-semibold">${inputs[0].value}</div>
+                        <div class="text-gray-700">${inputs[1].value}</div>
+                        <div class="text-gray-600">${inputs[2].value}</div>
+                        <div class="text-gray-600 text-sm">ID: ${inputs[3].value}</div>
+                    </div>
+                `;
+            });
+
+            let experienceHTML = '';
+            document.querySelectorAll('.experience-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input');
+                const description = entry.querySelector('textarea').value;
+                experienceHTML += `
+                    <div class="mb-4">
+                        <div class="font-semibold text-lg">${inputs[0].value}</div>
+                        <div class="text-gray-700">${inputs[1].value}</div>
+                        <div class="text-gray-600">${inputs[2].value}</div>
+                        <div class="mt-2 text-gray-700">${description}</div>
+                    </div>
+                `;
+            });
+
+            let projectHTML = '';
+            document.querySelectorAll('.project-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input, textarea');
+                projectHTML += `
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-lg">${inputs[0].value}</h3>
+                        <p class="text-gray-700">${inputs[1].value}</p>
+                        <p class="text-gray-600">Tech Stack: ${inputs[2].value}</p>
+                        <a href="${inputs[3].value}" class="text-indigo-600" target="_blank">${inputs[3].value}</a>
+                    </div>
+                `;
+            });
+
+            let languageHTML = '';
+            document.querySelectorAll('.language-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input, select');
+                languageHTML += `
+                    <div class="mb-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">${inputs[0].value}</span>
+                            <span class="text-gray-600">${inputs[1].value}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let referenceHTML = '';
+            document.querySelectorAll('.reference-entry').forEach(entry => {
+                const inputs = entry.querySelectorAll('input');
+                referenceHTML += `
+                    <div class="mb-3">
+                        <div class="font-semibold">${inputs[0].value}</div>
+                        <div class="text-gray-700">${inputs[1].value}</div>
+                        <div class="text-gray-600">${inputs[2].value}</div>
+                    </div>
+                `;
+            });
+
+            previewContent.innerHTML = `
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl font-bold text-indigo-700">${fullName}</h1>
+                    <div class="text-gray-600 mt-2">${email} | ${phone}</div>
+                    ${socialLinks}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Professional Summary</h2>
+                    <p class="text-gray-700">${summary}</p>
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Education</h2>
+                    ${educationHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Certifications</h2>
+                    ${certificationHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Professional Experience</h2>
+                    ${experienceHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Projects</h2>
+                    ${projectHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Languages</h2>
+                    ${languageHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">References</h2>
+                    ${referenceHTML}
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Skills</h2>
+                    <div class="space-y-2">
+                        ${skills.split(',').map(skill => `
+                            <div class="mb-2">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-700">${skill.trim()}</span>
+                                    <span class="text-gray-600">90%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-2">Achievements</h2>
+                    <p class="text-gray-700">${achievements}</p>
+                </div>
+            `;
+        }
+
+        function downloadResume() {
+            const element = document.getElementById('previewContent');
+            html2pdf()
+                .set({
+                    margin: 1,
+                    filename: 'professional_resume.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                })
+                .from(element)
+                .save();
+        }
+
+        function saveDraft() {
+            // Implement saving draft functionality here using localStorage or other methods.
+            alert("Save Draft functionality not yet implemented.");
+        }
+
+        function loadDraft() {
+            // Implement loading draft functionality here using localStorage or other methods.
+            alert("Load Draft functionality not yet implemented.");
+        }
+
+        function resetForm() {
+            document.getElementById('resumeForm').reset();
+            document.getElementById('profilePreview').src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+            // Clear other form sections as needed.
+        }
+    </script>
+</body>
+</html>
