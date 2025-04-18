@@ -1,0 +1,3119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern E-Commerce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#0D9488", secondary: "#0891B2" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      :root {
+      --primary: #0D9488;
+      --secondary: #0891B2;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-card: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.05);
+      --border: #e5e7eb;
+      }
+      .dark-mode {
+      --primary: #14B8A6;
+      --secondary: #06B6D4;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --bg-primary: #111827;
+      --bg-secondary: #1f2937;
+      --bg-card: #1f2937;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --border: #374151;
+      }
+      body {
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      transition: background-color 0.3s, color 0.3s;
+      }
+      .product-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .product-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 25px 30px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+      }
+      .product-card img {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover img {
+      transform: scale(1.08);
+      }
+      .product-card {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .toast {
+      animation: slideIn 0.3s forwards, slideOut 0.3s 3s forwards;
+      transform: translateX(100%);
+      }
+      @keyframes slideIn {
+      to { transform: translateX(0); }
+      }
+      @keyframes slideOut {
+      to { transform: translateX(100%); }
+      }
+      .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      animation: progress 3s linear forwards;
+      }
+      @keyframes progress {
+      to { width: 0%; }
+      }
+      .typing-animation::after {
+      content: '|';
+      animation: blink 1s infinite;
+      }
+      @keyframes blink {
+      50% { opacity: 0; }
+      }
+      .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: blur(10px);
+      }
+      .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      }
+      .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+      }
+      .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s, visibility 0.5s;
+      }
+      .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      }
+      .loader-circle {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+      to { transform: rotate(360deg); }
+      }
+      .custom-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      background-color: var(--bg-primary);
+      }
+      .custom-checkbox:checked {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      }
+      .custom-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      }
+      .custom-radio {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      background-color: var(--bg-primary);
+      }
+      .custom-radio:checked {
+      border-color: var(--primary);
+      }
+      .custom-radio:checked::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      }
+      .custom-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      }
+      .custom-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      }
+      .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 34px;
+      }
+      .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      }
+      input:checked + .switch-slider {
+      background-color: var(--primary);
+      }
+      input:checked + .switch-slider:before {
+      transform: translateX(26px);
+      }
+      .custom-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 5px;
+      background: var(--border);
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+      }
+      .custom-range:hover {
+      opacity: 1;
+      }
+      .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      }
+      .custom-range::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      }
+      .carousel-container {
+      overflow: hidden;
+      position: relative;
+      }
+      .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      }
+      .carousel-slide {
+      flex: 0 0 100%;
+      }
+      .carousel-dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      }
+      .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--border);
+      margin: 0 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      }
+      .carousel-dot.active {
+      background-color: var(--primary);
+      }
+      ::-webkit-scrollbar {
+      width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      }
+      ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+      background: var(--secondary);
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen font-sans overflow-x-hidden">
+    <div class="loader">
+      <div class="loader-circle"></div>
+    </div>
+    <header
+      class="fixed top-0 left-0 w-full bg-white bg-opacity-90 backdrop-blur-md z-50 shadow-sm transition-all duration-300"
+    >
+      <div
+        class="container mx-auto px-4 py-4 flex items-center justify-between"
+      >
+        <a href="#" class="text-3xl font-['Pacifico'] text-primary">logo</a>
+        <nav class="hidden md:flex items-center space-x-8">
+          <a
+            href="#home"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Home</a
+          >
+          <a
+            href="#featured"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Featured</a
+          >
+          <a
+            href="#products"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Products</a
+          >
+          <a
+            href="#collections"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Collections</a
+          >
+          <a
+            href="#contact"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Contact</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <button
+            id="search-toggle"
+            class="w-10 h-10 flex items-center justify-center text-gray-700 hover:text-primary transition-colors"
+          >
+            <i class="ri-search-line text-xl"></i>
+          </button>
+          <div class="relative">
+            <button
+              id="cart-toggle"
+              class="w-10 h-10 flex items-center justify-center text-gray-700 hover:text-primary transition-colors"
+            >
+              <i class="ri-shopping-bag-line text-xl"></i>
+              <span
+                id="cart-count"
+                class="absolute -top-1 -right-1 bg-secondary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                >0</span
+              >
+            </button>
+          </div>
+          <button
+            id="theme-toggle"
+            class="w-10 h-10 flex items-center justify-center text-gray-700 hover:text-primary transition-colors"
+          >
+            <i class="ri-sun-line text-xl"></i>
+          </button>
+          <button
+            id="menu-toggle"
+            class="w-10 h-10 md:hidden flex items-center justify-center text-gray-700 hover:text-primary transition-colors"
+          >
+            <i class="ri-menu-line text-xl"></i>
+          </button>
+        </div>
+      </div>
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-t border-gray-100 py-4"
+      >
+        <div class="container mx-auto px-4 flex flex-col space-y-4">
+          <a
+            href="#home"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Home</a
+          >
+          <a
+            href="#featured"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Featured</a
+          >
+          <a
+            href="#products"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Products</a
+          >
+          <a
+            href="#collections"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Collections</a
+          >
+          <a
+            href="#contact"
+            class="text-gray-700 hover:text-primary font-medium transition-colors"
+            >Contact</a
+          >
+        </div>
+      </div>
+      <div
+        id="search-bar"
+        class="hidden bg-white border-t border-gray-100 py-4"
+      >
+        <div class="container mx-auto px-4">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search for products..."
+              class="w-full py-3 pl-12 pr-4 bg-gray-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <div
+              class="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 flex items-center justify-center text-gray-400"
+            >
+              <i class="ri-search-line"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section
+        id="home"
+        class="relative min-h-screen flex items-center justify-center pt-16"
+        style="background-image: url('https://readdy.ai/api/search-image?query=modern%2520minimalist%2520e-commerce%2520website%2520hero%2520background%2520with%2520subtle%2520gradient%2520from%2520light%2520blue%2520to%2520white%2C%2520abstract%2520shapes%2C%2520clean%2520design%2C%2520high-end%2520fashion%2520products%2520elegantly%2520arranged%2520on%2520the%2520right%2520side%2C%2520leaving%2520space%2520for%2520text%2520on%2520the%2520left%2C%2520professional%2520product%2520photography%2C%2520bright%2520lighting%2C%2520soft%2520shadows&width=1920&height=1080&seq=1&orientation=landscape'); background-size: cover; background-position: center;"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/30"
+        ></div>
+        <div class="container mx-auto px-4 z-10 w-full">
+          <div class="flex flex-col md:flex-row items-center">
+            <div class="w-full md:w-1/2 text-center md:text-left mb-12 md:mb-0">
+              <h1
+                class="text-4xl md:text-6xl font-bold mb-6 typing-animation"
+                id="hero-title"
+              >
+                Discover Your Style
+              </h1>
+              <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-lg">
+                Explore our curated collection of premium products designed for
+                the modern lifestyle. Quality meets elegance in every piece.
+              </p>
+              <div
+                class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+              >
+                <a
+                  href="#products"
+                  class="bg-primary text-white px-8 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg whitespace-nowrap"
+                  >Shop Now</a
+                >
+                <a
+                  href="#collections"
+                  class="bg-white text-primary border border-primary px-8 py-3 rounded-button font-medium hover:bg-gray-50 transition-colors whitespace-nowrap"
+                  >View Collections</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+        >
+          <div class="w-10 h-10 flex items-center justify-center text-primary">
+            <i class="ri-arrow-down-line text-2xl"></i>
+          </div>
+        </div>
+      </section>
+      <section
+        id="featured"
+        class="py-20 bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50"
+      >
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              Featured Products
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Discover our most popular items that combine exceptional quality,
+              innovative design, and timeless style.
+            </p>
+          </div>
+          <div class="carousel-container relative">
+            <div class="carousel-track">
+              <div class="carousel-slide px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520white%2520sneakers%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520footwear%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520casual%2520shoes&width=500&height=500&seq=2&orientation=squarish"
+                        alt="Premium Sneakers"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                      <div
+                        class="absolute top-4 right-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                      >
+                        NEW
+                      </div>
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">Premium Sneakers</h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-half-fill"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(42)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xl font-bold">$129.99</span>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="1"
+                          data-name="Premium Sneakers"
+                          data-price="129.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520white%2520sneakers%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520footwear%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520casual%2520shoes&width=500&height=500&seq=2&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520watch%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520timepiece&width=500&height=500&seq=3&orientation=squarish"
+                        alt="Luxury Watch"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                      <div
+                        class="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-2 py-1 rounded"
+                      >
+                        POPULAR
+                      </div>
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">Luxury Watch</h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(78)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xl font-bold">$249.99</span>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="2"
+                          data-name="Luxury Watch"
+                          data-price="249.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520watch%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520timepiece&width=500&height=500&seq=3&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520handbag%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520purse&width=500&height=500&seq=4&orientation=squarish"
+                        alt="Designer Handbag"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                      <div
+                        class="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                      >
+                        SALE
+                      </div>
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">Designer Handbag</h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-line"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(36)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div>
+                          <span class="text-xl font-bold">$179.99</span>
+                          <span class="text-gray-400 line-through ml-2"
+                            >$229.99</span
+                          >
+                        </div>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="3"
+                          data-name="Designer Handbag"
+                          data-price="179.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520handbag%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520purse&width=500&height=500&seq=4&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520wireless%2520headphones%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520audio%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520electronics&width=500&height=500&seq=5&orientation=squarish"
+                        alt="Wireless Headphones"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                      <div
+                        class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                      >
+                        BESTSELLER
+                      </div>
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">
+                        Wireless Headphones
+                      </h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-half-fill"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(124)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xl font-bold">$199.99</span>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="4"
+                          data-name="Wireless Headphones"
+                          data-price="199.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520wireless%2520headphones%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520audio%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520electronics&width=500&height=500&seq=5&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520sunglasses%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520eyewear&width=500&height=500&seq=6&orientation=squarish"
+                        alt="Designer Sunglasses"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">
+                        Designer Sunglasses
+                      </h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-line"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(57)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xl font-bold">$149.99</span>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="5"
+                          data-name="Designer Sunglasses"
+                          data-price="149.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520sunglasses%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520eyewear&width=500&height=500&seq=6&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="product-card rounded-lg overflow-hidden">
+                    <div class="relative overflow-hidden h-64">
+                      <img
+                        src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520smart%2520watch%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520wearable%2520technology&width=500&height=500&seq=7&orientation=squarish"
+                        alt="Smart Watch"
+                        class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                      />
+                      <div
+                        class="absolute top-4 right-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                      >
+                        NEW
+                      </div>
+                    </div>
+                    <div class="p-6">
+                      <h3 class="text-xl font-bold mb-2">Smart Watch</h3>
+                      <div class="flex items-center mb-3">
+                        <div class="flex text-yellow-400">
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                          <i class="ri-star-fill"></i>
+                        </div>
+                        <span class="text-gray-500 text-sm ml-2">(93)</span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xl font-bold">$299.99</span>
+                        <button
+                          class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                          data-id="6"
+                          data-name="Smart Watch"
+                          data-price="299.99"
+                          data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520smart%2520watch%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520wearable%2520technology&width=500&height=500&seq=7&orientation=squarish"
+                        >
+                          <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="ri-shopping-cart-line"></i>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel-prev absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center text-gray-700"
+              >
+                <i class="ri-arrow-left-s-line"></i>
+              </div>
+            </button>
+            <button
+              class="carousel-next absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors z-10"
+            >
+              <div
+                class="w-6 h-6 flex items-center justify-center text-gray-700"
+              >
+                <i class="ri-arrow-right-s-line"></i>
+              </div>
+            </button>
+          </div>
+          <div class="carousel-dots mt-8"></div>
+        </div>
+      </section>
+      <section id="products" class="py-20">
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Products</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Browse our complete collection of premium products designed for
+              the modern lifestyle.
+            </p>
+          </div>
+          <div class="mb-8 flex flex-wrap items-center justify-center gap-4">
+            <div class="inline-flex bg-gray-100 p-1 rounded-full">
+              <button
+                class="category-filter active px-6 py-2.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-medium whitespace-nowrap shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                data-category="all"
+              >
+                All Products
+              </button>
+              <button
+                class="category-filter px-4 py-2 rounded-full text-gray-700 font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+                data-category="clothing"
+              >
+                Clothing
+              </button>
+              <button
+                class="category-filter px-4 py-2 rounded-full text-gray-700 font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+                data-category="accessories"
+              >
+                Accessories
+              </button>
+              <button
+                class="category-filter px-4 py-2 rounded-full text-gray-700 font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+                data-category="electronics"
+              >
+                Electronics
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="clothing"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520denim%2520jacket%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520outerwear&width=500&height=500&seq=8&orientation=squarish"
+                  alt="Denim Jacket"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Denim Jacket</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-line"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(48)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$89.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="7"
+                      data-name="Denim Jacket"
+                      data-price="89.99"
+                      data-category="clothing"
+                      data-description="Classic denim jacket with a modern fit. Perfect for layering in any season."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520denim%2520jacket%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520outerwear&width=500&height=500&seq=8&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="7"
+                      data-name="Denim Jacket"
+                      data-price="89.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520denim%2520jacket%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520outerwear&width=500&height=500&seq=8&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="accessories"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520wallet%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=9&orientation=squarish"
+                  alt="Leather Wallet"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  SALE
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Leather Wallet</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-half-fill"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(63)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold">$49.99</span>
+                    <span class="text-gray-400 line-through ml-2">$69.99</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="8"
+                      data-name="Leather Wallet"
+                      data-price="49.99"
+                      data-category="accessories"
+                      data-description="Handcrafted genuine leather wallet with multiple card slots and a sleek design."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520wallet%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=9&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="8"
+                      data-name="Leather Wallet"
+                      data-price="49.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520wallet%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=9&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="electronics"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520wireless%2520earbuds%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=10&orientation=squarish"
+                  alt="Wireless Earbuds"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  BESTSELLER
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Wireless Earbuds</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(142)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$159.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="9"
+                      data-name="Wireless Earbuds"
+                      data-price="159.99"
+                      data-category="electronics"
+                      data-description="Premium wireless earbuds with active noise cancellation and crystal-clear sound quality."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520wireless%2520earbuds%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=10&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="9"
+                      data-name="Wireless Earbuds"
+                      data-price="159.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520wireless%2520earbuds%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=10&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="clothing"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520silk%2520scarf%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520fabric&width=500&height=500&seq=11&orientation=squarish"
+                  alt="Silk Scarf"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Silk Scarf</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-line"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(29)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$79.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="10"
+                      data-name="Silk Scarf"
+                      data-price="79.99"
+                      data-category="clothing"
+                      data-description="Luxurious silk scarf with a unique pattern, perfect for adding elegance to any outfit."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520silk%2520scarf%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520fabric&width=500&height=500&seq=11&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="10"
+                      data-name="Silk Scarf"
+                      data-price="79.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520silk%2520scarf%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520fabric&width=500&height=500&seq=11&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="electronics"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520portable%2520speaker%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=12&orientation=squarish"
+                  alt="Portable Speaker"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute top-4 right-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  NEW
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Portable Speaker</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-half-fill"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(87)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$129.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="11"
+                      data-name="Portable Speaker"
+                      data-price="129.99"
+                      data-category="electronics"
+                      data-description="Compact portable speaker with powerful bass and 24-hour battery life."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520portable%2520speaker%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=12&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="11"
+                      data-name="Portable Speaker"
+                      data-price="129.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520portable%2520speaker%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520tech%2520device%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520audio%2520equipment&width=500&height=500&seq=12&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="accessories"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520belt%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=13&orientation=squarish"
+                  alt="Leather Belt"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Leather Belt</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-line"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(52)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$59.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="12"
+                      data-name="Leather Belt"
+                      data-price="59.99"
+                      data-category="accessories"
+                      data-description="Premium leather belt with a sleek metal buckle, crafted for durability and style."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520belt%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=13&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="12"
+                      data-name="Leather Belt"
+                      data-price="59.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520belt%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520leather%2520goods&width=500&height=500&seq=13&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="clothing"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520cashmere%2520sweater%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520knitwear&width=500&height=500&seq=14&orientation=squarish"
+                  alt="Cashmere Sweater"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  SALE
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Cashmere Sweater</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(74)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xl font-bold">$149.99</span>
+                    <span class="text-gray-400 line-through ml-2">$199.99</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="13"
+                      data-name="Cashmere Sweater"
+                      data-price="149.99"
+                      data-category="clothing"
+                      data-description="Luxuriously soft cashmere sweater with a relaxed fit and ribbed details."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520cashmere%2520sweater%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520knitwear&width=500&height=500&seq=14&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="13"
+                      data-name="Cashmere Sweater"
+                      data-price="149.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520cashmere%2520sweater%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520clothing%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520knitwear&width=500&height=500&seq=14&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="product-card rounded-lg overflow-hidden fade-in"
+              data-category="accessories"
+            >
+              <div class="relative overflow-hidden h-64">
+                <img
+                  src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520backpack%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520bag&width=500&height=500&seq=15&orientation=squarish"
+                  alt="Leather Backpack"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
+                >
+                  BESTSELLER
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold mb-2">Leather Backpack</h3>
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-fill"></i>
+                    <i class="ri-star-half-fill"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm ml-2">(118)</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">$199.99</span>
+                  <div class="flex gap-2">
+                    <button
+                      class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors"
+                      data-id="14"
+                      data-name="Leather Backpack"
+                      data-price="199.99"
+                      data-category="accessories"
+                      data-description="Stylish and functional leather backpack with multiple compartments and adjustable straps."
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520backpack%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520bag&width=500&height=500&seq=15&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-eye-line"></i>
+                      </div>
+                    </button>
+                    <button
+                      class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors"
+                      data-id="14"
+                      data-name="Leather Backpack"
+                      data-price="199.99"
+                      data-image="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520leather%2520backpack%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520accessory%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design%2C%2520luxury%2520bag&width=500&height=500&seq=15&orientation=squarish"
+                    >
+                      <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line"></i>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-12">
+            <button
+              id="load-more-btn"
+              class="bg-primary text-white px-8 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center min-w-[160px]"
+            >
+              <span>Load More</span>
+              <div
+                class="hidden ml-2 w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+              ></div>
+            </button>
+            <p id="no-more-products" class="hidden text-gray-500 mt-4">
+              No more products to load
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        id="collections"
+        class="py-20 bg-gradient-to-br from-cyan-50 via-teal-50 to-sky-50"
+      >
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              Shop by Collection
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Explore our carefully curated collections designed to match your
+              lifestyle and preferences.
+            </p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md fade-in">
+              <div class="relative h-64 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=luxury%2520minimalist%2520summer%2520fashion%2520collection%2520with%2520light%2520clothing%2C%2520accessories%2C%2520and%2520footwear%2520arranged%2520elegantly%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520bright%2520lighting%2C%2520soft%2520shadows%2C%2520pastel%2520colors%2C%2520high-end%2520fashion%2520styling&width=600&height=400&seq=16&orientation=landscape"
+                  alt="Summer Collection"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end"
+                >
+                  <div class="p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Summer Collection</h3>
+                    <p class="mb-4">Light, breathable pieces for warm days.</p>
+                    <a
+                      href="#"
+                      class="inline-block bg-white text-gray-900 px-4 py-2 rounded-button font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
+                      >Explore</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg overflow-hidden shadow-md fade-in">
+              <div class="relative h-64 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=luxury%2520minimalist%2520business%2520professional%2520collection%2520with%2520formal%2520clothing%2C%2520leather%2520accessories%2C%2520and%2520elegant%2520footwear%2520arranged%2520neatly%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520bright%2520lighting%2C%2520soft%2520shadows%2C%2520neutral%2520colors%2C%2520high-end%2520fashion%2520styling&width=600&height=400&seq=17&orientation=landscape"
+                  alt="Business Collection"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end"
+                >
+                  <div class="p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Business Collection</h3>
+                    <p class="mb-4">
+                      Professional attire for the modern workplace.
+                    </p>
+                    <a
+                      href="#"
+                      class="inline-block bg-white text-gray-900 px-4 py-2 rounded-button font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
+                      >Explore</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg overflow-hidden shadow-md fade-in">
+              <div class="relative h-64 overflow-hidden">
+                <img
+                  src="https://readdy.ai/api/search-image?query=luxury%2520minimalist%2520tech%2520accessories%2520collection%2520with%2520premium%2520gadgets%2C%2520headphones%2C%2520and%2520smart%2520devices%2520arranged%2520elegantly%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520bright%2520lighting%2C%2520soft%2520shadows%2C%2520modern%2520design%2C%2520high-end%2520technology%2520styling&width=600&height=400&seq=18&orientation=landscape"
+                  alt="Tech Essentials"
+                  class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end"
+                >
+                  <div class="p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Tech Essentials</h3>
+                    <p class="mb-4">
+                      Cutting-edge gadgets for the modern lifestyle.
+                    </p>
+                    <a
+                      href="#"
+                      class="inline-block bg-white text-gray-900 px-4 py-2 rounded-button font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
+                      >Explore</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="py-20 bg-gradient-to-r from-teal-50 via-cyan-50 to-sky-50"
+      >
+        <div class="container mx-auto px-4">
+          <div
+            class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden"
+          >
+            <div class="flex flex-col md:flex-row">
+              <div
+                class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center"
+              >
+                <h2 class="text-3xl font-bold mb-4">
+                  Subscribe to Our Newsletter
+                </h2>
+                <p class="text-gray-600 mb-6">
+                  Stay updated with our latest products, exclusive offers, and
+                  style tips delivered straight to your inbox.
+                </p>
+                <form class="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    placeholder="Your email address"
+                    class="flex-grow px-4 py-3 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                  <button
+                    type="submit"
+                    class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              </div>
+              <div
+                class="w-full md:w-1/2 bg-gray-100 p-8 md:p-12 flex items-center justify-center"
+              >
+                <div class="text-center">
+                  <div
+                    class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+                  >
+                    <i class="ri-mail-line text-3xl"></i>
+                  </div>
+                  <h3 class="text-xl font-bold mb-2">
+                    Benefits of Subscribing
+                  </h3>
+                  <ul class="text-gray-600 space-y-2 text-left">
+                    <li class="flex items-start">
+                      <div
+                        class="w-5 h-5 mt-0.5 flex-shrink-0 flex items-center justify-center text-primary"
+                      >
+                        <i class="ri-check-line"></i>
+                      </div>
+                      <span class="ml-2">Early access to new collections</span>
+                    </li>
+                    <li class="flex items-start">
+                      <div
+                        class="w-5 h-5 mt-0.5 flex-shrink-0 flex items-center justify-center text-primary"
+                      >
+                        <i class="ri-check-line"></i>
+                      </div>
+                      <span class="ml-2"
+                        >Exclusive subscriber-only discounts</span
+                      >
+                    </li>
+                    <li class="flex items-start">
+                      <div
+                        class="w-5 h-5 mt-0.5 flex-shrink-0 flex items-center justify-center text-primary"
+                      >
+                        <i class="ri-check-line"></i>
+                      </div>
+                      <span class="ml-2"
+                        >Style guides and product care tips</span
+                      >
+                    </li>
+                    <li class="flex items-start">
+                      <div
+                        class="w-5 h-5 mt-0.5 flex-shrink-0 flex items-center justify-center text-primary"
+                      >
+                        <i class="ri-check-line"></i>
+                      </div>
+                      <span class="ml-2"
+                        >Free shipping on your first order</span
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="contact" class="py-20">
+        <div class="container mx-auto px-4">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Contact Us</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Have questions or need assistance? We're here to help. Reach out
+              to our customer service team.
+            </p>
+          </div>
+          <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-1/3">
+                <div class="bg-white rounded-lg shadow-md p-6 h-full">
+                  <div class="mb-6">
+                    <div
+                      class="w-12 h-12 mb-4 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+                    >
+                      <i class="ri-map-pin-line text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Visit Us</h3>
+                    <p class="text-gray-600">
+                      123 Fashion Street<br />New York, NY 10001<br />United
+                      States
+                    </p>
+                  </div>
+                  <div class="mb-6">
+                    <div
+                      class="w-12 h-12 mb-4 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+                    >
+                      <i class="ri-mail-line text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Email Us</h3>
+                    <p class="text-gray-600">
+                      info@modernshop.com<br />support@modernshop.com
+                    </p>
+                  </div>
+                  <div>
+                    <div
+                      class="w-12 h-12 mb-4 flex items-center justify-center bg-primary bg-opacity-10 rounded-full text-primary"
+                    >
+                      <i class="ri-phone-line text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Call Us</h3>
+                    <p class="text-gray-600">
+                      +1 (555) 123-4567<br />Mon-Fri: 9am-6pm EST
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full md:w-2/3">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                  <h3 class="text-xl font-bold mb-6">Send Us a Message</h3>
+                  <form id="contact-form" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label
+                          for="name"
+                          class="block text-gray-700 font-medium mb-2"
+                          >Your Name</label
+                        >
+                        <input
+                          type="text"
+                          id="name"
+                          class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <p
+                          class="text-red-500 text-sm mt-1 hidden"
+                          id="name-error"
+                        ></p>
+                      </div>
+                      <div>
+                        <label
+                          for="email"
+                          class="block text-gray-700 font-medium mb-2"
+                          >Your Email</label
+                        >
+                        <input
+                          type="email"
+                          id="email"
+                          class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <p
+                          class="text-red-500 text-sm mt-1 hidden"
+                          id="email-error"
+                        ></p>
+                      </div>
+                    </div>
+                    <div class="mb-6">
+                      <label
+                        for="subject"
+                        class="block text-gray-700 font-medium mb-2"
+                        >Subject</label
+                      >
+                      <input
+                        type="text"
+                        id="subject"
+                        class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                      <p
+                        class="text-red-500 text-sm mt-1 hidden"
+                        id="subject-error"
+                      ></p>
+                    </div>
+                    <div class="mb-6">
+                      <label
+                        for="message"
+                        class="block text-gray-700 font-medium mb-2"
+                        >Message</label
+                      >
+                      <textarea
+                        id="message"
+                        rows="5"
+                        class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                      ></textarea>
+                      <p
+                        class="text-red-500 text-sm mt-1 hidden"
+                        id="message-error"
+                      ></p>
+                    </div>
+                    <button
+                      type="submit"
+                      id="contact-submit"
+                      class="bg-primary text-white px-8 py-3 rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap flex items-center justify-center min-w-[160px]"
+                    >
+                      <span>Send Message</span>
+                      <div
+                        class="hidden ml-2 w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+                      ></div>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          <div>
+            <a
+              href="#"
+              class="text-3xl font-['Pacifico'] text-white mb-6 inline-block"
+              >logo</a
+            >
+            <p class="text-gray-400 mb-6">
+              Premium quality products for the modern lifestyle. Discover
+              elegance, quality, and innovation in every piece.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-facebook-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-twitter-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-instagram-fill"></i>
+              </a>
+              <a
+                href="#"
+                class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full hover:bg-primary transition-colors"
+              >
+                <i class="ri-pinterest-fill"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-6">Shop</h3>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >All Products</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >New Arrivals</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Best Sellers</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Sale Items</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Gift Cards</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-6">Customer Service</h3>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Contact Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >FAQs</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Shipping & Returns</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Size Guide</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Track Your Order</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-6">About Us</h3>
+            <ul class="space-y-3">
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Our Story</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Sustainability</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Careers</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Press</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition-colors"
+                  >Privacy Policy</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center"
+        >
+          <p class="text-gray-400 mb-4 md:mb-0">
+            © 2025 Modern Shop. All rights reserved.
+          </p>
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center text-gray-400">
+              <i class="ri-visa-fill text-2xl mr-2"></i>
+              <i class="ri-mastercard-fill text-2xl mr-2"></i>
+              <i class="ri-paypal-fill text-2xl mr-2"></i>
+              <i class="ri-apple-fill text-2xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <div
+      id="cart-sidebar"
+      class="fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50"
+    >
+      <div class="flex flex-col h-full">
+        <div
+          class="p-6 border-b border-gray-200 flex justify-between items-center"
+        >
+          <h3 class="text-xl font-bold">Your Cart</h3>
+          <button
+            id="close-cart"
+            class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto p-6">
+          <div class="text-center py-12 text-gray-500">
+            <div
+              class="w-20 h-20 mx-auto mb-4 flex items-center justify-center bg-gray-100 rounded-full"
+            >
+              <i class="ri-shopping-cart-line text-3xl"></i>
+            </div>
+            <p>Your cart is empty</p>
+          </div>
+        </div>
+        <div class="p-6 border-t border-gray-200">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-gray-700 font-medium">Subtotal</span>
+            <span id="cart-subtotal" class="text-xl font-bold">$0.00</span>
+          </div>
+          <button
+            id="checkout-btn"
+            class="w-full bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors mb-3 whitespace-nowrap"
+          >
+            Checkout
+          </button>
+          <button
+            id="continue-shopping"
+            class="w-full bg-gray-100 text-gray-700 py-3 rounded-button font-medium hover:bg-gray-200 transition-colors whitespace-nowrap"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      id="quick-view-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div
+        class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300"
+      >
+        <div
+          class="p-6 flex justify-between items-center border-b border-gray-200"
+        >
+          <h3 class="text-xl font-bold">Product Details</h3>
+          <button
+            id="close-quick-view"
+            class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/2">
+              <div class="bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  id="quick-view-image"
+                  src=""
+                  alt="Product"
+                  class="w-full h-auto object-cover object-top"
+                />
+              </div>
+            </div>
+            <div class="w-full md:w-1/2">
+              <h2 id="quick-view-name" class="text-2xl font-bold mb-2"></h2>
+              <div class="flex items-center mb-4">
+                <div class="flex text-yellow-400">
+                  <i class="ri-star-fill"></i>
+                  <i class="ri-star-fill"></i>
+                  <i class="ri-star-fill"></i>
+                  <i class="ri-star-fill"></i>
+                  <i class="ri-star-half-fill"></i>
+                </div>
+                <span class="text-gray-500 text-sm ml-2">(87 reviews)</span>
+              </div>
+              <div class="mb-4">
+                <span id="quick-view-price" class="text-2xl font-bold"></span>
+              </div>
+              <p id="quick-view-description" class="text-gray-600 mb-6"></p>
+              <div class="mb-6">
+                <h4 class="font-medium mb-2">Size</h4>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    class="size-option w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    S
+                  </button>
+                  <button
+                    class="size-option w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    M
+                  </button>
+                  <button
+                    class="size-option w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    L
+                  </button>
+                  <button
+                    class="size-option w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    XL
+                  </button>
+                </div>
+              </div>
+              <div class="mb-6">
+                <h4 class="font-medium mb-2">Quantity</h4>
+                <div class="flex items-center">
+                  <button
+                    class="quantity-btn w-10 h-10 flex items-center justify-center border border-gray-300 rounded-l hover:bg-gray-100 transition-colors"
+                    data-action="decrease"
+                  >
+                    <i class="ri-subtract-line"></i>
+                  </button>
+                  <input
+                    type="number"
+                    class="quantity-input w-16 h-10 border-t border-b border-gray-300 text-center focus:outline-none"
+                    value="1"
+                    min="1"
+                    max="99"
+                  />
+                  <button
+                    class="quantity-btn w-10 h-10 flex items-center justify-center border border-gray-300 rounded-r hover:bg-gray-100 transition-colors"
+                    data-action="increase"
+                  >
+                    <i class="ri-add-line"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <button
+                  id="quick-view-add-to-cart"
+                  class="flex-grow bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+                >
+                  Add to Cart
+                </button>
+                <button
+                  class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <i class="ri-heart-line"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="checkout-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div
+        class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300"
+      >
+        <div
+          class="p-6 flex justify-between items-center border-b border-gray-200"
+        >
+          <h3 class="text-xl font-bold">Checkout</h3>
+          <button
+            id="close-checkout"
+            class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-3/5">
+              <h4 class="text-lg font-bold mb-4">Shipping Information</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label
+                    for="first-name"
+                    class="block text-gray-700 font-medium mb-2"
+                    >First Name</label
+                  >
+                  <input
+                    type="text"
+                    id="first-name"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="last-name"
+                    class="block text-gray-700 font-medium mb-2"
+                    >Last Name</label
+                  >
+                  <input
+                    type="text"
+                    id="last-name"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label
+                  for="email-checkout"
+                  class="block text-gray-700 font-medium mb-2"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="email-checkout"
+                  class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div class="mb-4">
+                <label
+                  for="address"
+                  class="block text-gray-700 font-medium mb-2"
+                  >Address</label
+                >
+                <input
+                  type="text"
+                  id="address"
+                  class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div>
+                  <label for="city" class="block text-gray-700 font-medium mb-2"
+                    >City</label
+                  >
+                  <input
+                    type="text"
+                    id="city"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="state"
+                    class="block text-gray-700 font-medium mb-2"
+                    >State</label
+                  >
+                  <input
+                    type="text"
+                    id="state"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label for="zip" class="block text-gray-700 font-medium mb-2"
+                    >ZIP Code</label
+                  >
+                  <input
+                    type="text"
+                    id="zip"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+              </div>
+              <h4 class="text-lg font-bold mb-4">Payment Method</h4>
+              <div class="mb-6">
+                <div class="flex items-center mb-3">
+                  <input
+                    type="radio"
+                    id="credit-card"
+                    name="payment-method"
+                    class="custom-radio"
+                    checked
+                  />
+                  <label for="credit-card" class="ml-2">Credit Card</label>
+                </div>
+                <div class="flex items-center mb-3">
+                  <input
+                    type="radio"
+                    id="paypal"
+                    name="payment-method"
+                    class="custom-radio"
+                  />
+                  <label for="paypal" class="ml-2">PayPal</label>
+                </div>
+                <div class="flex items-center">
+                  <input
+                    type="radio"
+                    id="apple-pay"
+                    name="payment-method"
+                    class="custom-radio"
+                  />
+                  <label for="apple-pay" class="ml-2">Apple Pay</label>
+                </div>
+              </div>
+              <div id="credit-card-form">
+                <div class="mb-4">
+                  <label
+                    for="card-number"
+                    class="block text-gray-700 font-medium mb-2"
+                    >Card Number</label
+                  >
+                  <input
+                    type="text"
+                    id="card-number"
+                    class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label
+                      for="expiry"
+                      class="block text-gray-700 font-medium mb-2"
+                      >Expiry Date</label
+                    >
+                    <input
+                      type="text"
+                      id="expiry"
+                      placeholder="MM/YY"
+                      class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      for="cvv"
+                      class="block text-gray-700 font-medium mb-2"
+                      >CVV</label
+                    >
+                    <input
+                      type="text"
+                      id="cvv"
+                      class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="w-full md:w-2/5">
+              <div class="bg-gray-50 rounded-lg p-6">
+                <h4 class="text-lg font-bold mb-4">Order Summary</h4>
+                <div id="checkout-items" class="mb-6">
+                  <div
+                    class="flex items-center justify-between py-3 border-b border-gray-200"
+                  >
+                    <div class="flex items-center">
+                      <span class="text-gray-700">Products</span>
+                    </div>
+                    <span id="checkout-subtotal" class="font-medium"
+                      >$0.00</span
+                    >
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-3 border-b border-gray-200"
+                  >
+                    <span class="text-gray-700">Shipping</span>
+                    <span class="font-medium">$5.99</span>
+                  </div>
+                  <div
+                    class="flex items-center justify-between py-3 border-b border-gray-200"
+                  >
+                    <span class="text-gray-700">Tax</span>
+                    <span id="checkout-tax" class="font-medium">$0.00</span>
+                  </div>
+                  <div class="flex items-center justify-between py-3">
+                    <span class="text-lg font-bold">Total</span>
+                    <span id="checkout-total" class="text-lg font-bold"
+                      >$5.99</span
+                    >
+                  </div>
+                </div>
+                <button
+                  id="place-order-btn"
+                  class="w-full bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+                >
+                  Place Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
+    <div
+      id="overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+    ></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Contact form validation and submission
+        const contactForm = document.getElementById("contact-form");
+        const contactSubmitBtn = document.getElementById("contact-submit");
+        const contactFields = {
+          name: {
+            input: document.getElementById("name"),
+            error: document.getElementById("name-error"),
+            validate: (value) =>
+              value.trim().length >= 2
+                ? ""
+                : "Name must be at least 2 characters long",
+          },
+          email: {
+            input: document.getElementById("email"),
+            error: document.getElementById("email-error"),
+            validate: (value) =>
+              /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+                ? ""
+                : "Please enter a valid email address",
+          },
+          subject: {
+            input: document.getElementById("subject"),
+            error: document.getElementById("subject-error"),
+            validate: (value) =>
+              value.trim().length >= 3
+                ? ""
+                : "Subject must be at least 3 characters long",
+          },
+          message: {
+            input: document.getElementById("message"),
+            error: document.getElementById("message-error"),
+            validate: (value) =>
+              value.trim().length >= 10
+                ? ""
+                : "Message must be at least 10 characters long",
+          },
+        };
+        function validateField(fieldName) {
+          const field = contactFields[fieldName];
+          const value = field.input.value;
+          const errorMessage = field.validate(value);
+
+          if (errorMessage) {
+            field.input.classList.add("border-red-500");
+            field.error.textContent = errorMessage;
+            field.error.classList.remove("hidden");
+            return false;
+          } else {
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+            return true;
+          }
+        }
+        function resetForm() {
+          Object.values(contactFields).forEach((field) => {
+            field.input.value = "";
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+          });
+        }
+        if (contactForm) {
+          contactForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isValid = Object.keys(contactFields).every((fieldName) =>
+              validateField(fieldName),
+            );
+
+            if (isValid) {
+              // Show loading state
+              const buttonText = contactSubmitBtn.querySelector("span");
+              const spinner = contactSubmitBtn.querySelector(".animate-spin");
+              buttonText.classList.add("hidden");
+              spinner.classList.remove("hidden");
+              contactSubmitBtn.disabled = true;
+
+              try {
+                // Simulate API call
+                await new Promise((resolve) => setTimeout(resolve, 1500));
+
+                // Show success message
+                showToast(
+                  "Message sent successfully! We'll get back to you soon.",
+                  "success",
+                );
+
+                // Reset form
+                resetForm();
+              } catch (error) {
+                showToast("Failed to send message. Please try again.", "error");
+              } finally {
+                // Reset button state
+                buttonText.classList.remove("hidden");
+                spinner.classList.add("hidden");
+                contactSubmitBtn.disabled = false;
+              }
+            }
+          });
+          // Add blur event listeners for real-time validation
+          Object.keys(contactFields).forEach((fieldName) => {
+            contactFields[fieldName].input.addEventListener("blur", () =>
+              validateField(fieldName),
+            );
+          });
+        }
+        // Loader
+        setTimeout(function () {
+          document.querySelector(".loader").classList.add("hidden");
+        }, 1000);
+        // Mobile menu toggle
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        menuToggle.addEventListener("click", function () {
+          mobileMenu.classList.toggle("hidden");
+        });
+        // Search toggle
+        const searchToggle = document.getElementById("search-toggle");
+        const searchBar = document.getElementById("search-bar");
+        searchToggle.addEventListener("click", function () {
+          searchBar.classList.toggle("hidden");
+        });
+        // Theme toggle
+        const themeToggle = document.getElementById("theme-toggle");
+        const themeIcon = themeToggle.querySelector("i");
+        themeToggle.addEventListener("click", function () {
+          document.body.classList.toggle("dark-mode");
+          if (document.body.classList.contains("dark-mode")) {
+            themeIcon.classList.remove("ri-sun-line");
+            themeIcon.classList.add("ri-moon-line");
+          } else {
+            themeIcon.classList.remove("ri-moon-line");
+            themeIcon.classList.add("ri-sun-line");
+          }
+        });
+        // Typing animation
+        const heroTitle = document.getElementById("hero-title");
+        const text = "Discover Your Style";
+        let i = 0;
+        function typeWriter() {
+          if (i < text.length) {
+            heroTitle.textContent = text.substring(0, i + 1);
+            i++;
+            setTimeout(typeWriter, 100);
+          }
+        }
+        typeWriter();
+        // Scroll reveal animation
+        const fadeElements = document.querySelectorAll(".fade-in");
+        function checkScroll() {
+          fadeElements.forEach((element) => {
+            const elementTop = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            if (elementTop < windowHeight - 100) {
+              element.classList.add("visible");
+            }
+          });
+        }
+        window.addEventListener("scroll", checkScroll);
+        checkScroll();
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute("href");
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: "smooth",
+              });
+              // Close mobile menu if open
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        });
+        // Header scroll effect
+        const header = document.querySelector("header");
+        window.addEventListener("scroll", function () {
+          if (window.scrollY > 50) {
+            header.classList.add("shadow-md");
+            header.classList.remove("py-4");
+            header.classList.add("py-2");
+          } else {
+            header.classList.remove("shadow-md");
+            header.classList.remove("py-2");
+            header.classList.add("py-4");
+          }
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Contact form validation and submission
+        const contactForm = document.getElementById("contact-form");
+        const contactSubmitBtn = document.getElementById("contact-submit");
+        const contactFields = {
+          name: {
+            input: document.getElementById("name"),
+            error: document.getElementById("name-error"),
+            validate: (value) =>
+              value.trim().length >= 2
+                ? ""
+                : "Name must be at least 2 characters long",
+          },
+          email: {
+            input: document.getElementById("email"),
+            error: document.getElementById("email-error"),
+            validate: (value) =>
+              /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+                ? ""
+                : "Please enter a valid email address",
+          },
+          subject: {
+            input: document.getElementById("subject"),
+            error: document.getElementById("subject-error"),
+            validate: (value) =>
+              value.trim().length >= 3
+                ? ""
+                : "Subject must be at least 3 characters long",
+          },
+          message: {
+            input: document.getElementById("message"),
+            error: document.getElementById("message-error"),
+            validate: (value) =>
+              value.trim().length >= 10
+                ? ""
+                : "Message must be at least 10 characters long",
+          },
+        };
+        function validateField(fieldName) {
+          const field = contactFields[fieldName];
+          const value = field.input.value;
+          const errorMessage = field.validate(value);
+
+          if (errorMessage) {
+            field.input.classList.add("border-red-500");
+            field.error.textContent = errorMessage;
+            field.error.classList.remove("hidden");
+            return false;
+          } else {
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+            return true;
+          }
+        }
+        function resetForm() {
+          Object.values(contactFields).forEach((field) => {
+            field.input.value = "";
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+          });
+        }
+        if (contactForm) {
+          contactForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isValid = Object.keys(contactFields).every((fieldName) =>
+              validateField(fieldName),
+            );
+
+            if (isValid) {
+              // Show loading state
+              const buttonText = contactSubmitBtn.querySelector("span");
+              const spinner = contactSubmitBtn.querySelector(".animate-spin");
+              buttonText.classList.add("hidden");
+              spinner.classList.remove("hidden");
+              contactSubmitBtn.disabled = true;
+
+              try {
+                // Simulate API call
+                await new Promise((resolve) => setTimeout(resolve, 1500));
+
+                // Show success message
+                showToast(
+                  "Message sent successfully! We'll get back to you soon.",
+                  "success",
+                );
+
+                // Reset form
+                resetForm();
+              } catch (error) {
+                showToast("Failed to send message. Please try again.", "error");
+              } finally {
+                // Reset button state
+                buttonText.classList.remove("hidden");
+                spinner.classList.add("hidden");
+                contactSubmitBtn.disabled = false;
+              }
+            }
+          });
+          // Add blur event listeners for real-time validation
+          Object.keys(contactFields).forEach((fieldName) => {
+            contactFields[fieldName].input.addEventListener("blur", () =>
+              validateField(fieldName),
+            );
+          });
+        }
+        // Carousel functionality
+        const track = document.querySelector(".carousel-track");
+        const slides = document.querySelectorAll(".carousel-slide");
+        const prevButton = document.querySelector(".carousel-prev");
+        const nextButton = document.querySelector(".carousel-next");
+        const dotsContainer = document.querySelector(".carousel-dots");
+        let currentIndex = 0;
+        const slideWidth = 100;
+        function setupCarousel() {
+          // Create dots
+          slides.forEach((_, index) => {
+            const dot = document.createElement("button");
+            dot.classList.add("carousel-dot");
+            if (index === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+          });
+          // Set initial position
+          updateCarousel();
+        }
+        function updateCarousel() {
+          track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+          // Update dots
+          document.querySelectorAll(".carousel-dot").forEach((dot, index) => {
+            if (index === currentIndex) {
+              dot.classList.add("active");
+            } else {
+              dot.classList.remove("active");
+            }
+          });
+        }
+        function goToSlide(index) {
+          currentIndex = index;
+          updateCarousel();
+        }
+        function nextSlide() {
+          currentIndex = (currentIndex + 1) % slides.length;
+          updateCarousel();
+        }
+        function prevSlide() {
+          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+          updateCarousel();
+        }
+        prevButton.addEventListener("click", prevSlide);
+        nextButton.addEventListener("click", nextSlide);
+        setupCarousel();
+        // Auto slide
+        let intervalId = setInterval(nextSlide, 5000);
+        track.addEventListener("mouseenter", () => {
+          clearInterval(intervalId);
+        });
+        track.addEventListener("mouseleave", () => {
+          intervalId = setInterval(nextSlide, 5000);
+        });
+        // Category filter
+        const categoryButtons = document.querySelectorAll(".category-filter");
+        const productCards = document.querySelectorAll("[data-category]");
+        categoryButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            // Remove active class from all buttons
+            categoryButtons.forEach((btn) =>
+              btn.classList.remove("active", "bg-primary", "text-white"),
+            );
+            categoryButtons.forEach((btn) =>
+              btn.classList.add("text-gray-700", "hover:bg-gray-200"),
+            );
+            // Add active class to clicked button
+            button.classList.add("active", "bg-primary", "text-white");
+            button.classList.remove("text-gray-700", "hover:bg-gray-200");
+            const category = button.getAttribute("data-category");
+            // Filter products
+            productCards.forEach((card) => {
+              if (
+                category === "all" ||
+                card.getAttribute("data-category") === category
+              ) {
+                card.style.display = "block";
+              } else {
+                card.style.display = "none";
+              }
+            });
+          });
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        // Contact form validation and submission
+        const contactForm = document.getElementById("contact-form");
+        const contactSubmitBtn = document.getElementById("contact-submit");
+        const contactFields = {
+          name: {
+            input: document.getElementById("name"),
+            error: document.getElementById("name-error"),
+            validate: (value) =>
+              value.trim().length >= 2
+                ? ""
+                : "Name must be at least 2 characters long",
+          },
+          email: {
+            input: document.getElementById("email"),
+            error: document.getElementById("email-error"),
+            validate: (value) =>
+              /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+                ? ""
+                : "Please enter a valid email address",
+          },
+          subject: {
+            input: document.getElementById("subject"),
+            error: document.getElementById("subject-error"),
+            validate: (value) =>
+              value.trim().length >= 3
+                ? ""
+                : "Subject must be at least 3 characters long",
+          },
+          message: {
+            input: document.getElementById("message"),
+            error: document.getElementById("message-error"),
+            validate: (value) =>
+              value.trim().length >= 10
+                ? ""
+                : "Message must be at least 10 characters long",
+          },
+        };
+        function validateField(fieldName) {
+          const field = contactFields[fieldName];
+          const value = field.input.value;
+          const errorMessage = field.validate(value);
+
+          if (errorMessage) {
+            field.input.classList.add("border-red-500");
+            field.error.textContent = errorMessage;
+            field.error.classList.remove("hidden");
+            return false;
+          } else {
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+            return true;
+          }
+        }
+        function resetForm() {
+          Object.values(contactFields).forEach((field) => {
+            field.input.value = "";
+            field.input.classList.remove("border-red-500");
+            field.error.classList.add("hidden");
+          });
+        }
+        if (contactForm) {
+          contactForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isValid = Object.keys(contactFields).every((fieldName) =>
+              validateField(fieldName),
+            );
+
+            if (isValid) {
+              // Show loading state
+              const buttonText = contactSubmitBtn.querySelector("span");
+              const spinner = contactSubmitBtn.querySelector(".animate-spin");
+              buttonText.classList.add("hidden");
+              spinner.classList.remove("hidden");
+              contactSubmitBtn.disabled = true;
+
+              try {
+                // Simulate API call
+                await new Promise((resolve) => setTimeout(resolve, 1500));
+
+                // Show success message
+                showToast(
+                  "Message sent successfully! We'll get back to you soon.",
+                  "success",
+                );
+
+                // Reset form
+                resetForm();
+              } catch (error) {
+                showToast("Failed to send message. Please try again.", "error");
+              } finally {
+                // Reset button state
+                buttonText.classList.remove("hidden");
+                spinner.classList.add("hidden");
+                contactSubmitBtn.disabled = false;
+              }
+            }
+          });
+          // Add blur event listeners for real-time validation
+          Object.keys(contactFields).forEach((fieldName) => {
+            contactFields[fieldName].input.addEventListener("blur", () =>
+              validateField(fieldName),
+            );
+          });
+        }
+        // Cart functionality
+        const cartToggle = document.getElementById("cart-toggle");
+        const cartSidebar = document.getElementById("cart-sidebar");
+        const closeCart = document.getElementById("close-cart");
+        const continueShopping = document.getElementById("continue-shopping");
+        const cartItems = document.getElementById("cart-items");
+        const cartSubtotal = document.getElementById("cart-subtotal");
+        const cartCount = document.getElementById("cart-count");
+        const checkoutBtn = document.getElementById("checkout-btn");
+        const overlay = document.getElementById("overlay");
+        let cart = [];
+        function updateCart() {
+          // Clear cart items
+          cartItems.innerHTML = "";
+          if (cart.length === 0) {
+            cartItems.innerHTML = `
+      <div class="text-center py-12 text-gray-500">
+      <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center bg-gray-100 rounded-full">
+      <i class="ri-shopping-cart-line text-3xl"></i>
+      </div>
+      <p>Your cart is empty</p>
+      </div>
+      `;
+          } else {
+            // Add items to cart
+            cart.forEach((item) => {
+              const cartItem = document.createElement("div");
+              cartItem.classList.add(
+                "flex",
+                "items-center",
+                "py-4",
+                "border-b",
+                "border-gray-200",
+              );
+              cartItem.innerHTML = `
+      <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden mr-4">
+      <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover object-top">
+      </div>
+      <div class="flex-grow">
+      <h4 class="font-medium">${item.name}</h4>
+      <div class="flex items-center mt-1">
+      <div class="flex items-center mr-4">
+      <button class="cart-quantity-btn w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors" data-action="decrease" data-id="${item.id}">
+      <i class="ri-subtract-line"></i>
+      </button>
+      <span class="mx-2">${item.quantity}</span>
+      <button class="cart-quantity-btn w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full text-gray-600 hover:bg-gray-200 transition-colors" data-action="increase" data-id="${item.id}">
+      <i class="ri-add-line"></i>
+      </button>
+      </div>
+      <span class="text-gray-700">$${(item.price * item.quantity).toFixed(2)}</span>
+      </div>
+      </div>
+      <button class="remove-from-cart ml-4 w-8 h-8 flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors" data-id="${item.id}">
+      <i class="ri-delete-bin-line"></i>
+      </button>
+      `;
+              cartItems.appendChild(cartItem);
+            });
+          }
+          // Update subtotal
+          const subtotal = cart.reduce(
+            (total, item) => total + item.price * item.quantity,
+            0,
+          );
+          cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+          // Update cart count
+          const count = cart.reduce((total, item) => total + item.quantity, 0);
+          cartCount.textContent = count;
+          // Update checkout values
+          const checkoutSubtotal = document.getElementById("checkout-subtotal");
+          const checkoutTax = document.getElementById("checkout-tax");
+          const checkoutTotal = document.getElementById("checkout-total");
+          if (checkoutSubtotal) {
+            checkoutSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            const tax = subtotal * 0.08;
+            checkoutTax.textContent = `$${tax.toFixed(2)}`;
+            const shipping = 5.99;
+            checkoutTotal.textContent = `$${(subtotal + tax + shipping).toFixed(2)}`;
+          }
+          // Add event listeners to cart item buttons
+          const cartQuantityBtns = document.querySelectorAll(".cart-quantity-btn");
+          cartQuantityBtns.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const id = this.getAttribute("data-id");
+              const action = this.getAttribute("data-action");
+              updateItemQuantity(id, action);
+            });
+          });
+          const removeButtons = document.querySelectorAll(".remove-from-cart");
+          removeButtons.forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const id = this.getAttribute("data-id");
+              removeFromCart(id);
+            });
+          });
+        }
+        function addToCart(product) {
+          const existingItem = cart.find((item) => item.id === product.id);
+          if (existingItem) {
+            existingItem.quantity += 1;
+          } else {
+            cart.push({
+              id: product.id,
+              name: product.name,
+              price: parseFloat(product.price),
+              image: product.image,
+              quantity: 1,
+            });
+          }
+          updateCart();
+          showToast(`${product.name} added to cart`);
+        }
+        function updateItemQuantity(id, action) {
+          const item = cart.find((item) => item.id === id);
+          if (item) {
+            if (action === "increase") {
+              item.quantity += 1;
+            } else if (action === "decrease") {
+              item.quantity -= 1;
+              if (item.quantity <= 0) {
+                removeFromCart(id);
+                return;
+              }
+            }
+            updateCart();
+          }
+        }
+        function removeFromCart(id) {
+          cart = cart.filter((item) => item.id !== id);
+          updateCart();
+        }
+        function toggleCart() {
+          cartSidebar.classList.toggle("translate-x-full");
+          overlay.classList.toggle("hidden");
+        }
+        cartToggle.addEventListener("click", toggleCart);
+        closeCart.addEventListener("click", toggleCart);
+        continueShopping.addEventListener("click", toggleCart);
+        overlay.addEventListener("click", function () {
+          cartSidebar.classList.add("translate-x-full");
+          quickViewModal.classList.remove("opacity-100", "pointer-events-auto");
+          quickViewModal.classList.add("opacity-0", "pointer-events-none");
+          quickViewModal.querySelector(".bg-white").classList.remove("scale-100");
+          quickViewModal.querySelector(".bg-white").classList.add("scale-95");
+          checkoutModal.classList.remove("opacity-100", "pointer-events-auto");
+          checkoutModal.classList.add("opacity-0", "pointer-events-none");
+          checkoutModal.querySelector(".bg-white").classList.remove("scale-100");
+          checkoutModal.querySelector(".bg-white").classList.add("scale-95");
+          overlay.classList.add("hidden");
+        });
+        // Add to cart buttons
+        const addToCartButtons = document.querySelectorAll(".add-to-cart");
+        addToCartButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const product = {
+              id: this.getAttribute("data-id"),
+              name: this.getAttribute("data-name"),
+              price: this.getAttribute("data-price"),
+              image: this.getAttribute("data-image"),
+            };
+            addToCart(product);
+          });
+        });
+        // Quick view functionality
+        const quickViewButtons = document.querySelectorAll(".quick-view");
+        const quickViewModal = document.getElementById("quick-view-modal");
+        const closeQuickView = document.getElementById("close-quick-view");
+        const quickViewImage = document.getElementById("quick-view-image");
+        const quickViewName = document.getElementById("quick-view-name");
+        const quickViewPrice = document.getElementById("quick-view-price");
+        const quickViewDescription = document.getElementById(
+          "quick-view-description",
+        );
+        const quickViewAddToCart = document.getElementById("quick-view-add-to-cart");
+        function openQuickView(product) {
+          quickViewImage.src = product.image;
+          quickViewName.textContent = product.name;
+          quickViewPrice.textContent = `$${product.price}`;
+          quickViewDescription.textContent = product.description;
+          quickViewAddToCart.setAttribute("data-id", product.id);
+          quickViewAddToCart.setAttribute("data-name", product.name);
+          quickViewAddToCart.setAttribute("data-price", product.price);
+          quickViewAddToCart.setAttribute("data-image", product.image);
+          quickViewModal.classList.remove("opacity-0", "pointer-events-none");
+          quickViewModal.classList.add("opacity-100", "pointer-events-auto");
+          quickViewModal.querySelector(".bg-white").classList.remove("scale-95");
+          quickViewModal.querySelector(".bg-white").classList.add("scale-100");
+          overlay.classList.remove("hidden");
+        }
+        quickViewButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const product = {
+              id: this.getAttribute("data-id"),
+              name: this.getAttribute("data-name"),
+              price: this.getAttribute("data-price"),
+              image: this.getAttribute("data-image"),
+              description: this.getAttribute("data-description"),
+            };
+            openQuickView(product);
+          });
+        });
+        closeQuickView.addEventListener("click", function () {
+          quickViewModal.classList.remove("opacity-100", "pointer-events-auto");
+          quickViewModal.classList.add("opacity-0", "pointer-events-none");
+          quickViewModal.querySelector(".bg-white").classList.remove("scale-100");
+          quickViewModal.querySelector(".bg-white").classList.add("scale-95");
+          overlay.classList.add("hidden");
+        });
+        quickViewAddToCart.addEventListener("click", function () {
+          const product = {
+            id: this.getAttribute("data-id"),
+            name: this.getAttribute("data-name"),
+            price: this.getAttribute("data-price"),
+            image: this.getAttribute("data-image"),
+          };
+          addToCart(product);
+        });
+        // Quantity buttons in quick view
+        const quantityInput = document.querySelector(".quantity-input");
+        const quantityBtns = document.querySelectorAll(".quantity-btn");
+        quantityBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const action = this.getAttribute("data-action");
+            let value = parseInt(quantityInput.value);
+            if (action === "increase") {
+              value = Math.min(value + 1, 99);
+            } else if (action === "decrease") {
+              value = Math.max(value - 1, 1);
+            }
+            quantityInput.value = value;
+          });
+        });
+        // Size options in quick view
+        const sizeOptions = document.querySelectorAll(".size-option");
+        sizeOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            sizeOptions.forEach((opt) =>
+              opt.classList.remove("border-primary", "bg-primary", "bg-opacity-10"),
+            );
+            this.classList.add("border-primary", "bg-primary", "bg-opacity-10");
+          });
+        });
+        // Checkout functionality
+        const checkoutModal = document.getElementById("checkout-modal");
+        const closeCheckout = document.getElementById("close-checkout");
+        const placeOrderBtn = document.getElementById("place-order-btn");
+        checkoutBtn.addEventListener("click", function () {
+          if (cart.length === 0) {
+            showToast("Your cart is empty", "error");
+            return;
+          }
+          checkoutModal.classList.remove("opacity-0", "pointer-events-none");
+          checkoutModal.classList.add("opacity-100", "pointer-events-auto");
+          checkoutModal.querySelector(".bg-white").classList.remove("scale-95");
+          checkoutModal.querySelector(".bg-white").classList.add("scale-100");
+          overlay.classList.remove("hidden");
+          cartSidebar.classList.add("translate-x-full");
+        });
+        closeCheckout.addEventListener("click", function () {
+          checkoutModal.classList.remove("opacity-100", "pointer-events-auto");
+          checkoutModal.classList.add("opacity-0", "pointer-events-none");
+          checkoutModal.querySelector(".bg-white").classList.remove("scale-100");
+          checkoutModal.querySelector(".bg-white").classList.add("scale-95");
+          overlay.classList.add("hidden");
+        });
+        placeOrderBtn.addEventListener("click", function () {
+          showToast("Order placed successfully!", "success");
+          setTimeout(function () {
+            checkoutModal.classList.remove("opacity-100", "pointer-events-auto");
+            checkoutModal.classList.add("opacity-0", "pointer-events-none");
+            checkoutModal.querySelector(".bg-white").classList.remove("scale-100");
+            checkoutModal.querySelector(".bg-white").classList.add("scale-95");
+            overlay.classList.add("hidden");
+            // Clear cart
+            cart = [];
+            updateCart();
+          }, 1500);
+        });
+        // Payment method toggle
+        const paymentMethods = document.querySelectorAll(
+          'input[name="payment-method"]',
+        );
+        const creditCardForm = document.getElementById("credit-card-form");
+        paymentMethods.forEach((method) => {
+          method.addEventListener("change", function () {
+            if (this.id === "credit-card") {
+              creditCardForm.style.display = "block";
+            } else {
+              creditCardForm.style.display = "none";
+            }
+          });
+        });
+        // Toast notifications
+        function showToast(message, type = "success") {
+          const toastContainer = document.getElementById("toast-container");
+          const toast = document.createElement("div");
+          toast.classList.add(
+            "toast",
+            "flex",
+            "items-center",
+            "p-4",
+            "mb-3",
+            "rounded-lg",
+            "shadow-md",
+            "relative",
+          );
+          if (type === "success") {
+            toast.classList.add(
+              "bg-green-50",
+              "text-green-800",
+              "border-l-4",
+              "border-green-500",
+            );
+            toast.innerHTML = `
+      <div class="w-6 h-6 mr-3 flex items-center justify-center text-green-500">
+      <i class="ri-check-line"></i>
+      </div>
+      <p>${message}</p>
+      <div class="progress-bar"></div>
+      `;
+          } else if (type === "error") {
+            toast.classList.add(
+              "bg-red-50",
+              "text-red-800",
+              "border-l-4",
+              "border-red-500",
+            );
+            toast.innerHTML = `
+      <div class="w-6 h-6 mr-3 flex items-center justify-center text-red-500">
+      <i class="ri-error-warning-line"></i>
+      </div>
+      <p>${message}</p>
+      <div class="progress-bar"></div>
+      `;
+          }
+          toastContainer.appendChild(toast);
+          setTimeout(() => {
+            toast.remove();
+          }, 3300);
+        }
+        // Load More functionality
+        let currentPage = 1;
+        const productsPerPage = 8;
+        const totalProducts = 24; // Total number of products available
+        document
+          .getElementById("load-more-btn")
+          .addEventListener("click", function () {
+            const button = this;
+            const spinner = button.querySelector(".animate-spin");
+            const loadMoreText = button.querySelector("span");
+            const noMoreProducts = document.getElementById("no-more-products");
+            // Show loading state
+            loadMoreText.classList.add("hidden");
+            spinner.classList.remove("hidden");
+            // Simulate API call delay
+            setTimeout(() => {
+              currentPage++;
+              const startIndex = (currentPage - 1) * productsPerPage;
+              if (startIndex >= totalProducts) {
+                // No more products to load
+                button.classList.add("hidden");
+                noMoreProducts.classList.remove("hidden");
+              } else {
+                // Generate new product cards here
+                // This is where you would normally fetch new products from an API
+                const productsGrid = document.querySelector("#products .grid");
+                for (
+                  let i = 0;
+                  i < productsPerPage && startIndex + i < totalProducts;
+                  i++
+                ) {
+                  const productCard = document.createElement("div");
+                  productCard.className =
+                    "product-card rounded-lg overflow-hidden fade-in";
+                  productCard.setAttribute(
+                    "data-category",
+                    ["clothing", "accessories", "electronics"][
+                      Math.floor(Math.random() * 3)
+                    ],
+                  );
+                  productCard.innerHTML = `
+      <div class="relative overflow-hidden h-64">
+      <img src="https://readdy.ai/api/search-image?query=premium%2520minimalist%2520product%2520on%2520clean%2520white%2520background%2C%2520professional%2520product%2520photography%2C%2520high-end%2520fashion%2520item%2C%2520elegant%2520composition%2C%2520soft%2520shadows%2C%2520studio%2520lighting%2C%2520detailed%2520texture%2C%2520modern%2520design&width=500&height=500&seq=${startIndex + i + 20}&orientation=squarish" alt="Product" class="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105">
+      </div>
+      <div class="p-6">
+      <h3 class="text-xl font-bold mb-2">Product ${startIndex + i + 1}</h3>
+      <div class="flex items-center mb-3">
+      <div class="flex text-yellow-400">
+      <i class="ri-star-fill"></i>
+      <i class="ri-star-fill"></i>
+      <i class="ri-star-fill"></i>
+      <i class="ri-star-fill"></i>
+      <i class="ri-star-half-fill"></i>
+      </div>
+      <span class="text-gray-500 text-sm ml-2">(${Math.floor(Math.random() * 100) + 1})</span>
+      </div>
+      <div class="flex items-center justify-between">
+      <span class="text-xl font-bold">$${(Math.random() * 200 + 50).toFixed(2)}</span>
+      <div class="flex gap-2">
+      <button class="quick-view bg-gray-200 text-gray-700 p-2 rounded-full hover:bg-gray-300 transition-colors">
+      <div class="w-8 h-8 flex items-center justify-center">
+      <i class="ri-eye-line"></i>
+      </div>
+      </button>
+      <button class="add-to-cart bg-primary text-white p-2 rounded-full hover:bg-primary/90 transition-colors">
+      <div class="w-8 h-8 flex items-center justify-center">
+      <i class="ri-shopping-cart-line"></i>
+      </div>
+      </button>
+      </div>
+      </div>
+      </div>
+      `;
+                  productsGrid.appendChild(productCard);
+                }
+                // Reinitialize fade-in animation for new products
+                const fadeElements = document.querySelectorAll(".fade-in");
+                fadeElements.forEach((element) => {
+                  if (!element.classList.contains("visible")) {
+                    element.classList.add("visible");
+                  }
+                });
+              }
+              // Reset button state
+              loadMoreText.classList.remove("hidden");
+              spinner.classList.add("hidden");
+            }, 1500);
+          });
+        // Initialize cart
+        updateCart();
+      });
+    </script>
+  </body>
+</html>
