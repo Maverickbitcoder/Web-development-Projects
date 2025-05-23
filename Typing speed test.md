@@ -42,7 +42,3 @@ A fun and interactive web-based **Typing Speed Battle** game that challenges use
 
 - All data (e.g., best WPM history) is stored locally in your browser’s local storage.
 - This game works offline once loaded in the browser.
-
----
-
-Feel free to customize this README to match your profile or project theme!
