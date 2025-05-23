@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookWorm - Interactive Reading & Notes Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Space+Mono&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --light: #f8fafc;
+            --light-gray: #f3f4f6;
+            --medium-gray: #9ca3af;
+            --dark-gray: #4b5563;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --success: #10b981;
+            --error: #ef4444;
+            --perspective: 800px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Enhanced 3D Button Effects */
+        .btn-3d {
+            transform-style: preserve-3d;
+            perspective: var(--perspective);
+            position: relative;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            transform: translateZ(0);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-3d:hover {
+            transform: translateY(-3px) rotateX(5deg) rotateY(3deg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-3d:active {
+            transform: translateY(0) rotateX(0) rotateY(0);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Enhanced 3D Card Flip */
+        .theme-card-container {
+            perspective: var(--perspective);
+            height: 8rem;
+        }
+
+        .theme-card {
+            position: relative;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            height: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .theme-card-front, .theme-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .theme-card-front {
+            background: linear-gradient(to bottom right, var(--gradient-from), var(--gradient-to));
+            color: white;
+        }
+
+        .theme-card-back {
+            background: linear-gradient(to bottom right, var(--gradient-back-from), var(--gradient-back-to));
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .theme-card:hover {
+            transform: rotateY(180deg);
+        }
+
+        .card-icon, .card-title {
+            transform: translateZ(20px);
+        }
+
+        /* Enhanced Parallax Background */
+        .parallax-container {
+            position: relative;
+            height: 100%;
+            transform-style: preserve-3d;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: transform 0.1s ease-out;
+        }
+
+        .layer-1 {
+            transform: translateZ(-10px) scale(1.5);
+        }
+
+        .layer-2 {
+            transform: translateZ(-20px) scale(2);
+        }
+
+        .layer-3 {
+            transform: translateZ(-30px) scale(2.5);
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            transform: translateZ(0);
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            padding: 12px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 6px 30px 6px 30px;
+            border-radius: 6px;
+            border: 1px solid var(--medium-gray);
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+        }
+
+        .search-counter {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+        }
+
+        /* Main content layout */
+        main {
+            padding: 24px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+            margin-bottom: 24px;
+            transition: background-color 0.3s ease;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        /* Enhanced Upload zone */
+        .upload-zone {
+            border: 2px dashed var(--medium-gray);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, transform 0.3s;
+            transform-style: preserve-3d;
+            perspective: var(--perspective);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            transform: translateZ(10px);
+        }
+
+        .upload-icon {
+            color: var(--medium-gray);
+            margin-bottom: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-zone:hover .upload-icon {
+            transform: translateY(-5px);
+        }
+
+        /* Theme grid */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* Reader area with enhanced parallax */
+        .reader-area {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 24px;
+            min-height: 70vh;
+            position: relative;
+            transition: background-color 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .reader-initial {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .reader-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .reader-bg-1 {
+            background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05), transparent 30%);
+            transform: translateZ(-20px);
+        }
+
+        .reader-bg-2 {
+            background: radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.05), transparent 30%);
+            transform: translateZ(-40px);
+        }
+
+        .reader-bg-3 {
+            background: radial-gradient(circle at 40% 80%, rgba(245, 158, 11, 0.05), transparent 30%);
+            transform: translateZ(-60px);
+        }
+
+        .reader-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            color: var(--light-gray);
+        }
+
+        .reader-text {
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Enhanced Note Highlight System */
+        .highlight {
+            background-color: rgba(245, 158, 11, 0.3);
+            position: relative;
+            padding: 0 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .highlight:hover {
+            background-color: rgba(245, 158, 11, 0.5);
+            transform: translateZ(5px);
+        }
+
+        .note-tooltip {
+            position: absolute;
+            transform-style: preserve-3d;
+            perspective: var(--perspective);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .note-tooltip:hover {
+            transform: scale(1.05) translateZ(20px) rotateX(5deg);
+        }
+
+        /* Notes area */
+        .notes-area {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .note-item {
+            background-color: var(--light-gray);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: var(--perspective);
+        }
+
+        .note-item:hover {
+            transform: scale(1.02) rotateX(2deg) rotateY(-1deg);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            color: var(--dark-gray);
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .note-highlight {
+            font-style: italic;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            color: var(--dark-gray);
+        }
+
+        .note-content {
+            font-size: 0.875rem;
+        }
+
+        /* Enhanced Note Form */
+        .note-form {
+            background-color: var(--light-gray);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            transform-style: preserve-3d;
+            perspective: var(--perspective);
+            transition: transform 0.3s ease;
+        }
+
+        .note-form:hover {
+            transform: translateZ(5px);
+        }
+
+        .note-textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 80px;
+            background-color: white;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .note-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+        .note-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .empty-notes {
+            padding: 32px 0;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background-color: var(--accent);
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Search Highlights */
+        .search-highlight {
+            background-color: rgba(59, 130, 246, 0.3);
+            border-radius: 3px;
+        }
+
+        .search-highlight.active {
+            background-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Enhanced Hint System */
+        .hint {
+            position: fixed;
+            transform: translateX(-50%);
+            bottom: 2rem;
+            left: 50%;
+            max-width: 90%;
+            perspective: var(--perspective);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            z-index: 100;
+            opacity: 0;
+            transform: translateX(-50%) translateY(100%) rotateX(30deg);
+            background-color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .hint.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) rotateX(0);
+        }
+
+        .hint-header {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .hint-content {
+            margin-left: 12px;
+        }
+
+        .hint-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .hint-text {
+            font-size: 0.875rem;
+            color: var(--dark-gray);
+        }
+
+        .hint-dismiss {
+            margin-top: 8px;
+            text-align: right;
+            font-size: 0.75rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .hint-dismiss:hover {
+            transform: translateZ(5px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: white;
+            margin-top: 32px;
+            padding: 24px 0;
+            text-align: center;
+            box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .footer-text {
+            color: var(--dark-gray);
+            font-size: 0.875rem;
+        }
+
+        .footer-text small {
+            display: block;
+            margin-top: 4px;
+            color: var(--medium-gray);
+        }
+
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            margin-top: 8px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .footer-link:hover {
+            transform: translateY(-2px) translateZ(5px);
+        }
+
+        /* Enhanced Loading Animation */
+        .loading {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            animation: rotate 2s infinite linear;
+            margin: 0 auto 24px;
+        }
+
+        .loading div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .loading div:nth-child(1) {
+            animation-delay: -0.5s;
+            transform: rotateY(0deg);
+        }
+
+        .loading div:nth-child(2) {
+            animation-delay: -1s;
+            transform: rotateY(70deg);
+        }
+
+        .loading div:nth-child(3) {
+            animation-delay: -1.5s;
+            transform: rotateY(140deg);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: var(--medium-gray);
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: var(--dark-gray);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            background-color: var(--darker);
+            color: var(--light);
+        }
+
+        body.dark-mode header,
+        body.dark-mode footer,
+        body.dark-mode .card,
+        body.dark-mode .reader-area,
+        body.dark-mode .hint {
+            background-color: var(--dark);
+            color: var(--light);
+        }
+
+        body.dark-mode .search-input,
+        body.dark-mode .note-textarea {
+            background-color: var(--dark-gray);
+            color: var(--light);
+            border-color: var(--dark-gray);
+        }
+
+        body.dark-mode .note-item {
+            background-color: var(--dark-gray);
+        }
+
+        body.dark-mode .note-form {
+            background-color: var(--dark-gray);
+        }
+
+        body.dark-mode .footer-text,
+        body.dark-mode .note-content,
+        body.dark-mode .note-highlight {
+            color: var(--light-gray);
+        }
+
+        body.dark-mode .footer-text small {
+            color: var(--medium-gray);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-controls {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                flex-grow: 1;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            main {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                📚 BookWorm
+            </div>
+            <div class="header-controls">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search text...">
+                    <span class="search-counter" id="searchCounter"></span>
+                </div>
+                <button class="btn btn-3d" id="darkModeToggle">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="sidebar">
+            <div class="card">
+                <h2 class="card-title">Upload Text</h2>
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📄</div>
+                    <p>Drop your .txt file here</p>
+                    <p><small>or click to browse</small></p>
+                    <input type="file" id="fileInput" accept=".txt" hidden>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Reading Theme</h2>
+                <div class="theme-grid">
+                    <div class="theme-card-container">
+                        <div class="theme-card" data-theme="classic" style="--gradient-from: #9CA3AF; --gradient-to: #4B5563; --gradient-back-from: #6B7280; --gradient-back-to: #1F2937;">
+                            <div class="theme-card-front">
+                                <div class="card-icon">📜</div>
+                                <div class="card-title">Classic</div>
+                            </div>
+                            <div class="theme-card-back">
+                                <div>Timeless style</div>
+                                <div>Serif fonts</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card-container">
+                        <div class="theme-card" data-theme="scifi" style="--gradient-from: #3B82F6; --gradient-to: #1D4ED8; --gradient-back-from: #60A5FA; --gradient-back-to: #2563EB;">
+                            <div class="theme-card-front">
+                                <div class="card-icon">🚀</div>
+                                <div class="card-title">Sci-Fi</div>
+                            </div>
+                            <div class="theme-card-back">
+                                <div>Futuristic look</div>
+                                <div>Monospace font</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card-container">
+                        <div class="theme-card" data-theme="romance" style="--gradient-from: #EC4899; --gradient-to: #BE185D; --gradient-back-from: #F472B6; --gradient-back-to: #DB2777;">
+                            <div class="theme-card-front">
+                                <div class="card-icon">❤️</div>
+                                <div class="card-title">Romance</div>
+                            </div>
+                            <div class="theme-card-back">
+                                <div>Elegant style</div>
+                                <div>Stylish cursive</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card-container">
+                        <div class="theme-card" data-theme="mystery" style="--gradient-from: #8B5CF6; --gradient-to: #6D28D9; --gradient-back-from: #A78BFA; --gradient-back-to: #7C3AED;">
+                            <div class="theme-card-front">
+                                <div class="card-icon">🔍</div>
+                                <div class="card-title">Mystery</div>
+                            </div>
+                            <div class="theme-card-back">
+                                <div>Noir style</div>
+                                <div>Dark contrast</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Your Notes</h2>
+                <div class="notes-area custom-scrollbar" id="notesArea">
+                    <div class="empty-notes" id="emptyNotes">
+                        <p>No notes yet</p>
+                        <p><small>Highlight text to add notes</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="reader-area" id="readerArea">
+                <div class="reader-background reader-bg-1"></div>
+                <div class="reader-background reader-bg-2"></div>
+                <div class="reader-background reader-bg-3"></div>
+
+                <div class="reader-initial" id="readerInitial">
+                    <div class="reader-icon">📖</div>
+                    <h2>Ready to start reading</h2>
+                    <p>Upload a .txt file to begin</p>
+                </div>
+
+                <div class="reader-text custom-scrollbar" id="readerText" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="hint" id="highlightHint">
+        <div class="hint-header">
+            <div>💡</div>
+            <div class="hint-content">
+                <div class="hint-title">Highlighting Text</div>
+                <div class="hint-text">Select any text to highlight and add a note to it. Your notes will be saved automatically.</div>
+            </div>
+        </div>
+        <div class="hint-dismiss" id="dismissHint">Got it</div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-text">
+                BookWorm - Interactive Reading & Notes Companion
+                <small>Made using HTML/CSS/JS</small>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const readerArea = document.getElementById('readerArea');
+        const readerInitial = document.getElementById('readerInitial');
+        const readerText = document.getElementById('readerText');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const highlightHint = document.getElementById('highlightHint');
+        const dismissHint = document.getElementById('dismissHint');
+        const searchInput = document.getElementById('searchInput');
+        const searchCounter = document.getElementById('searchCounter');
+        const progressBar = document.getElementById('progressBar');
+        const notesArea = document.getElementById('notesArea');
+        const emptyNotes = document.getElementById('emptyNotes');
+        const themeCards = document.querySelectorAll('.theme-card');
+
+        // State variables
+        let notes = [];
+        let currentFile = null;
+        let currentTheme = 'classic';
+        let searchResults = [];
+        let currentSearchIndex = 0;
+        let lastScrollPosition = 0;
+
+        // Enhanced Parallax Effect for Reader Background
+        readerArea.addEventListener('mousemove', (e) => {
+            const { left, top, width, height } = readerArea.getBoundingClientRect();
+            const x = (e.clientX - left) / width - 0.5;
+            const y = (e.clientY - top) / height - 0.5;
+
+            const layers = document.querySelectorAll('.reader-background');
+            layers.forEach((layer, index) => {
+                const factor = (index + 1) * 10;
+                layer.style.transform = `translateX(${x * factor}px) translateY(${y * factor}px) translateZ(-${(index + 1) * 20}px)`;
+            });
+        });
+
+        // Reset parallax when mouse leaves
+        readerArea.addEventListener('mouseleave', () => {
+            const layers = document.querySelectorAll('.reader-background');
+            layers.forEach((layer, index) => {
+                layer.style.transform = `translateZ(-${(index + 1) * 20}px)`;
+            });
+        });
+
+        // Initialize from localStorage
+        function initializeApp() {
+            // Load dark mode preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.textContent = '☀️';
+            }
+
+            // Load saved notes
+            const savedNotes = localStorage.getItem('bookwormNotes');
+            if (savedNotes) {
+                notes = JSON.parse(savedNotes);
+                updateNotesUI();
+            }
+
+            // Load theme preference
+            const savedTheme = localStorage.getItem('bookwormTheme');
+            if (savedTheme) {
+                currentTheme = savedTheme;
+                applyTheme(currentTheme);
+            }
+
+            // Check if user has seen the hint
+            if (!localStorage.getItem('hintDismissed')) {
+                setTimeout(() => {
+                    highlightHint.classList.add('visible');
+                }, 3000);
+            }
+        }
+
+        // File Upload Handling
+        uploadZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = 'var(--primary)';
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.style.borderColor = 'var(--medium-gray)';
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = 'var(--medium-gray)';
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'text/plain') {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                handleFileUpload(fileInput.files[0]);
+            }
+        });
+
+        function handleFileUpload(file) {
+            currentFile = file;
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const content = e.target.result;
+                displayContent(content);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function displayContent(content) {
+            // Format the content with paragraphs
+            const formattedContent = content
+                .split('\n\n')
+                .map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`)
+                .join('');
+
+            readerInitial.style.display = 'none';
+            readerText.style.display = 'block';
+            readerText.innerHTML = formattedContent;
+
+            // Apply current theme to the text
+            applyTheme(currentTheme);
+
+            // Show hint if first time
+            if (!localStorage.getItem('hintDismissed')) {
+                setTimeout(() => {
+                    highlightHint.classList.add('visible');
+                }, 3000);
+            }
+        }
+
+        // Dark Mode Toggle
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            darkModeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+        });
+
+        // Theme Selection
+        themeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const theme = card.getAttribute('data-theme');
+                currentTheme = theme;
+                applyTheme(theme);
+                localStorage.setItem('bookwormTheme', theme);
+            });
+        });
+
+        function applyTheme(theme) {
+            // Remove all previous theme classes
+            readerText.classList.remove('theme-classic', 'theme-scifi', 'theme-romance', 'theme-mystery');
+
+            // Apply new theme
+            readerText.classList.add(`theme-${theme}`);
+
+            // Apply theme-specific styles
+            switch(theme) {
+                case 'classic':
+                    readerText.style.fontFamily = 'Merriweather, serif';
+                    readerText.style.color = document.body.classList.contains('dark-mode') ? '#f8fafc' : '#1e293b';
+                    readerText.style.backgroundColor = 'transparent';
+                    break;
+                case 'scifi':
+                    readerText.style.fontFamily = 'Space Mono, monospace';
+                    readerText.style.color = document.body.classList.contains('dark-mode') ? '#60A5FA' : '#2563EB';
+                    readerText.style.backgroundColor = 'transparent';
+                    break;
+                case 'romance':
+                    readerText.style.fontFamily = 'Pacifico, cursive';
+                    readerText.style.color = document.body.classList.contains('dark-mode') ? '#F472B6' : '#BE185D';
+                    readerText.style.backgroundColor = 'transparent';
+                    break;
+                case 'mystery':
+                    readerText.style.fontFamily = 'Merriweather, serif';
+                    readerText.style.color = document.body.classList.contains('dark-mode') ? '#A78BFA' : '#6D28D9';
+                    readerText.style.backgroundColor = 'transparent';
+                    break;
+            }
+        }
+
+        // Text Selection & Notes
+        document.addEventListener('mouseup', () => {
+            const selection = window.getSelection();
+            if (selection.toString().length > 0 && readerText.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+
+                // Create highlight
+                createHighlight(selection, range);
+
+                // Clear selection
+                selection.removeAllRanges();
+            }
+        });
+
+        function createHighlight(selection, range) {
+            const selectedText = selection.toString();
+
+            // Create a highlight span
+            const highlight = document.createElement('span');
+            highlight.className = 'highlight';
+            highlight.textContent = selectedText;
+
+            // Create a unique ID for the highlight
+            const highlightId = `highlight-${Date.now()}`;
+            highlight.setAttribute('data-id', highlightId);
+
+            // Replace the selection with the highlight span
+            range.deleteContents();
+            range.insertNode(highlight);
+
+            // Create a note form
+            createNoteForm(highlight, selectedText, highlightId);
+        }
+
+        function createNoteForm(highlight, selectedText, highlightId) {
+            // Create note modal
+            const noteForm = document.createElement('div');
+            noteForm.className = 'note-form';
+            noteForm.innerHTML = `
+                <textarea class="note-textarea" placeholder="Add your note..."></textarea>
+                <div class="note-form-actions">
+                    <button class="btn btn-primary btn-3d" id="saveNote">Save Note</button>
+                    <button class="btn btn-3d" id="cancelNote">Cancel</button>
+                </div>
+            `;
+
+            // Position the form
+            highlight.parentNode.insertBefore(noteForm, highlight.nextSibling);
+
+            // Focus the textarea
+            noteForm.querySelector('.note-textarea').focus();
+
+            // Add event listeners
+            noteForm.querySelector('#saveNote').addEventListener('click', () => {
+                const noteText = noteForm.querySelector('.note-textarea').value;
+                if (noteText.trim()) {
+                    saveNote(highlightId, selectedText, noteText);
+                }
+                noteForm.remove();
+            });
+
+            noteForm.querySelector('#cancelNote').addEventListener('click', () => {
+                // Remove the highlight and the form
+                const span = document.querySelector(`[data-id="${highlightId}"]`);
+                const textNode = document.createTextNode(selectedText);
+                span.parentNode.replaceChild(textNode, span);
+                noteForm.remove();
+            });
+        }
+
+        function saveNote(highlightId, highlightText, noteText) {
+            const timestamp = new Date().toLocaleString();
+            const newNote = {
+                id: highlightId,
+                text: noteText,
+                highlight: highlightText,
+                timestamp
+            };
+
+            notes.push(newNote);
+            localStorage.setItem('bookwormNotes', JSON.stringify(notes));
+
+            // Update the UI
+            updateNotesUI();
+        }
+
+        function updateNotesUI() {
+            if (notes.length === 0) {
+                emptyNotes.style.display = 'block';
+                return;
+            }
+
+            emptyNotes.style.display = 'none';
+
+            // Generate HTML for all notes
+            const notesHTML = notes.map(note => `
+                <div class="note-item" data-id="${note.id}">
+                    <div class="note-header">
+                        <span>${note.timestamp}</span>
+                        <div class="note-actions">
+                            <button class="delete-note" data-id="${note.id}">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="note-highlight">"${note.highlight.substring(0, 50)}${note.highlight.length > 50 ? '...' : ''}"</div>
+                    <div class="note-content">${note.text}</div>
+                </div>
+            `).join('');
+
+            notesArea.innerHTML = notesHTML;
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-note').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const noteId = e.target.getAttribute('data-id');
+                    deleteNote(noteId);
+                });
+            });
+        }
+
+        function deleteNote(noteId) {
+            // Remove the note from the array
+            notes = notes.filter(note => note.id !== noteId);
+            localStorage.setItem('bookwormNotes', JSON.stringify(notes));
+
+            // Update the UI
+            updateNotesUI();
+
+            // Remove the highlight from the text if possible
+            const highlight = document.querySelector(`[data-id="${noteId}"]`);
+            if (highlight) {
+                const text = highlight.textContent;
+                const textNode = document.createTextNode(text);
+                highlight.parentNode.replaceChild(textNode, highlight);
+            }
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if (!query) {
+                clearSearch();
+                return;
+            }
+
+            // Remove previous highlights
+            clearSearch();
+
+            // Skip if no text loaded
+            if (readerText.style.display === 'none') return;
+
+            // Find all instances of the search query
+            const content = readerText.innerHTML;
+            const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+
+            // Highlight matches
+            readerText.innerHTML = content.replace(regex, '<span class="search-highlight">$1</span>');
+
+            // Collect all highlights for navigation
+            searchResults = Array.from(document.querySelectorAll('.search-highlight'));
+
+            // Update counter
+            updateSearchCounter();
+
+            // Navigate to first result if any
+            if (searchResults.length > 0) {
+                navigateToSearchResult(0);
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (searchResults.length > 0) {
+                    // Go to next result
+                    currentSearchIndex = (currentSearchIndex + 1) % searchResults.length;
+                    navigateToSearchResult(currentSearchIndex);
+                }
+            }
+        });
+
+        function clearSearch() {
+            // Remove all search highlights but preserve note highlights
+            const content = readerText.innerHTML;
+            readerText.innerHTML = content.replace(/<span class="search-highlight( active)?">(.+?)<\/span>/g, '$2');
+
+            searchResults = [];
+            currentSearchIndex = 0;
+            searchCounter.textContent = '';
+        }
+
+        function updateSearchCounter() {
+            if (searchResults.length > 0) {
+                searchCounter.textContent = `${currentSearchIndex + 1} of ${searchResults.length}`;
+            } else {
+                searchCounter.textContent = '0 results';
+            }
+        }
+
+        function navigateToSearchResult(index) {
+            // Remove active class from all results
+            searchResults.forEach(result => result.classList.remove('active'));
+
+            // Add active class to current result
+            const currentResult = searchResults[index];
+            currentResult.classList.add('active');
+
+            // Scroll to the result
+            currentResult.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+            updateSearchCounter();
+        }
+
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollProgress = (scrollTop / scrollHeight) * 100;
+
+            progressBar.style.width = `${scrollProgress}%`;
+
+            // Store scroll direction for parallax effect
+            lastScrollPosition = scrollTop;
+        });
+
+        // Hint system
+        dismissHint.addEventListener('click', () => {
+            highlightHint.classList.remove('visible');
+            localStorage.setItem('hintDismissed', 'true');
+        });
+
+        // Helper function to escape regex special characters
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Initialize the app
+        initializeApp();
+    </script>
+</body>
+</html>
