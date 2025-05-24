@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTracker Pro - Medication Reminder & Tracker</title>
+    <style>
+        :root {
+            --primary: 210 100% 50%; /* #0080FF */
+            --primary-dark: 210 100% 40%; /* #0066CC */
+            --secondary: 150 60% 50%; /* #4CAF80 */
+            --accent: 30 100% 60%; /* #FF9933 */
+            --danger: 0 70% 60%; /* #E53935 */
+            --warning: 45 100% 60%; /* #FFB74D */
+            --success: 120 60% 50%; /* #4CAF50 */
+            --background: 210 11% 98%; /* #F5F7FA */
+            --surface: 0 0% 100%; /* #FFFFFF */
+            --text: 210 11% 13%; /* #1F2937 */
+            --text-secondary: 210 9% 31%; /* #4B5563 */
+            --border: 210 14% 89%; /* #E5E7EB */
+            --shadow: 210 40% 8%; /* #0F172A */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, hsl(var(--background)), hsl(210 20% 95%));
+            color: hsl(var(--text));
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: hsl(var(--surface));
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px hsla(var(--shadow), 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)));
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-3d {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: perspective(100px) rotateX(15deg) rotateY(-15deg);
+            box-shadow: 0 8px 16px hsla(var(--primary), 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: perspective(100px) rotateX(15deg) rotateY(-15deg) translateY(0px); }
+            50% { transform: perspective(100px) rotateX(15deg) rotateY(-15deg) translateY(-5px); }
+        }
+
+        .logo-3d::before {
+            content: '💊';
+            font-size: 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: hsl(var(--surface));
+            border: 2px solid hsl(var(--border));
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px hsla(var(--primary), 0.2);
+        }
+
+        .nav-btn.active {
+            background: hsl(var(--primary));
+            color: white;
+            border-color: hsl(var(--primary));
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: hsl(var(--surface));
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px hsla(var(--shadow), 0.1), 0 2px 4px -1px hsla(var(--shadow), 0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px hsla(var(--shadow), 0.1), 0 10px 10px -5px hsla(var(--shadow), 0.04);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transform: perspective(50px) rotateX(10deg);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: hsl(var(--text));
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid hsl(var(--border));
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: hsl(var(--surface));
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: hsl(var(--primary));
+            box-shadow: 0 0 0 3px hsla(var(--primary), 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            background: hsl(var(--primary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: hsl(var(--primary-dark));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px hsla(var(--primary), 0.3);
+        }
+
+        .btn-secondary {
+            background: hsl(var(--text-secondary));
+        }
+
+        .btn-success {
+            background: hsl(var(--success));
+        }
+
+        .btn-warning {
+            background: hsl(var(--warning));
+        }
+
+        .btn-danger {
+            background: hsl(var(--danger));
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* 3D Pill Visualization */
+        .pill-3d {
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
+            border-radius: 30px;
+            position: relative;
+            transform: perspective(100px) rotateX(20deg) rotateY(-20deg);
+            box-shadow: 0 8px 16px hsla(var(--primary), 0.3);
+            animation: pillFloat 2s ease-in-out infinite;
+            margin: 10px;
+        }
+
+        @keyframes pillFloat {
+            0%, 100% { transform: perspective(100px) rotateX(20deg) rotateY(-20deg) translateY(0px); }
+            50% { transform: perspective(100px) rotateX(20deg) rotateY(-20deg) translateY(-3px); }
+        }
+
+        .pill-3d::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: hsla(0, 0%, 100%, 0.3);
+            transform: translate(-50%, -50%);
+        }
+
+        /* Medication List */
+        .medication-item {
+            background: hsl(var(--surface));
+            border: 2px solid hsl(var(--border));
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .medication-item:hover {
+            border-color: hsl(var(--primary));
+            transform: translateX(4px);
+        }
+
+        .medication-info {
+            flex: 1;
+        }
+
+        .medication-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: hsl(var(--text));
+            margin-bottom: 4px;
+        }
+
+        .medication-details {
+            color: hsl(var(--text-secondary));
+            font-size: 0.9rem;
+        }
+
+        .medication-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-taken {
+            background: hsla(var(--success), 0.1);
+            color: hsl(var(--success));
+            border: 1px solid hsla(var(--success), 0.3);
+        }
+
+        .status-missed {
+            background: hsla(var(--danger), 0.1);
+            color: hsl(var(--danger));
+            border: 1px solid hsla(var(--danger), 0.3);
+        }
+
+        .status-postponed {
+            background: hsla(var(--warning), 0.1);
+            color: hsl(var(--warning));
+            border: 1px solid hsla(var(--warning), 0.3);
+        }
+
+        .status-pending {
+            background: hsla(var(--primary), 0.1);
+            color: hsl(var(--primary));
+            border: 1px solid hsla(var(--primary), 0.3);
+        }
+
+        /* Calendar */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: hsl(var(--surface));
+            border: 1px solid hsl(var(--border));
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.1);
+        }
+
+        .calendar-day.today {
+            background: hsl(var(--primary));
+            color: white;
+        }
+
+        .calendar-day.has-medication {
+            background: hsla(var(--success), 0.2);
+            border: 2px solid hsl(var(--success));
+        }
+
+        .calendar-day.has-missed {
+            background: hsla(var(--danger), 0.2);
+            border: 2px solid hsl(var(--danger));
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .chart-canvas {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px hsla(var(--shadow), 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: hsl(var(--border));
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, hsl(var(--success)), hsl(var(--secondary)));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, hsl(var(--surface)), hsl(210 20% 98%));
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid hsl(var(--border));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)));
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: hsl(var(--text-secondary));
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav {
+                flex-direction: column;
+            }
+
+            .medication-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .medication-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Hide sections initially */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: hsl(var(--surface));
+            border: 2px solid hsl(var(--primary));
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 25px hsla(var(--shadow), 0.2);
+            z-index: 1000;
+            max-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification.success {
+            border-color: hsl(var(--success));
+        }
+
+        .notification.error {
+            border-color: hsl(var(--danger));
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid hsla(var(--primary), 0.3);
+            border-radius: 50%;
+            border-top-color: hsl(var(--primary));
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: hsl(var(--text-secondary));
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>
+                <div class="logo-3d"></div>
+                MedTracker Pro
+            </h1>
+            <p style="color: hsl(var(--text-secondary)); font-size: 1.1rem;">Your personal medication reminder and adherence tracker</p>
+        </header>
+
+        <nav class="nav">
+            <button class="nav-btn active" data-section="add-medication">➕ Add Medication</button>
+            <button class="nav-btn" data-section="medications">💊 My Medications</button>
+            <button class="nav-btn" data-section="schedule">📅 Schedule</button>
+            <button class="nav-btn" data-section="history">📊 History & Stats</button>
+            <button class="nav-btn" data-section="settings">⚙️ Settings</button>
+        </nav>
+
+        <!-- Add Medication Section -->
+        <section id="add-medication" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));">
+                        ➕
+                    </div>
+                    <h2>Add New Medication</h2>
+                </div>
+
+                <form id="medication-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="med-name">Medication Name *</label>
+                            <input type="text" id="med-name" class="form-input" required placeholder="e.g., Aspirin">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="med-dosage">Dosage *</label>
+                            <input type="text" id="med-dosage" class="form-input" required placeholder="e.g., 100mg">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="med-frequency">Frequency *</label>
+                            <select id="med-frequency" class="form-input" required>
+                                <option value="">Select frequency</option>
+                                <option value="once-daily">Once daily</option>
+                                <option value="twice-daily">Twice daily</option>
+                                <option value="three-times-daily">Three times daily</option>
+                                <option value="four-times-daily">Four times daily</option>
+                                <option value="every-other-day">Every other day</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="custom-times" style="display: none;">
+                            <label class="form-label" for="med-times">Times (comma separated)</label>
+                            <input type="text" id="med-times" class="form-input" placeholder="e.g., 08:00, 14:00, 20:00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="med-start-date">Start Date *</label>
+                            <input type="date" id="med-start-date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="med-end-date">End Date</label>
+                            <input type="date" id="med-end-date" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="med-instructions">Special Instructions</label>
+                        <textarea id="med-instructions" class="form-input" rows="3" placeholder="e.g., Take with food, avoid alcohol"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        <div class="pill-3d"></div>
+                        Add Medication
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- My Medications Section -->
+        <section id="medications" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--secondary)), hsl(120 60% 40%));">
+                        💊
+                    </div>
+                    <h2>My Medications</h2>
+                </div>
+
+                <div id="medications-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💊</div>
+                        <p>No medications added yet. Add your first medication to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="schedule" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--accent)), hsl(30 100% 50%));">
+                        📅
+                    </div>
+                    <h2>Today's Schedule</h2>
+                </div>
+
+                <div id="todays-schedule">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <p>No medications scheduled for today.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));">
+                        📆
+                    </div>
+                    <h2>Calendar View</h2>
+                </div>
+
+                <div class="calendar-controls" style="margin-bottom: 20px; display: flex; justify-content: between; align-items: center;">
+                    <button class="btn btn-small" id="prev-month">← Previous</button>
+                    <h3 id="current-month" style="margin: 0 20px;"></h3>
+                    <button class="btn btn-small" id="next-month">Next →</button>
+                </div>
+
+                <div class="calendar-header" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 8px;">
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Sun</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Mon</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Tue</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Wed</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Thu</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Fri</div>
+                    <div style="text-align: center; font-weight: 600; color: hsl(var(--text-secondary));">Sat</div>
+                </div>
+
+                <div id="calendar" class="calendar"></div>
+            </div>
+        </section>
+
+        <!-- History & Stats Section -->
+        <section id="history" class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="adherence-rate">0%</div>
+                    <div class="stat-label">Adherence Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="doses-taken">0</div>
+                    <div class="stat-label">Doses Taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="doses-missed">0</div>
+                    <div class="stat-label">Doses Missed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="streak-days">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--success)), hsl(120 60% 40%));">
+                        📊
+                    </div>
+                    <h2>Adherence Progress</h2>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px;">Overall Adherence</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="overall-progress" style="width: 0%"></div>
+                    </div>
+                    <p style="margin-top: 8px; color: hsl(var(--text-secondary)); font-size: 0.9rem;" id="progress-text">0% - Start taking your medications to see progress</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));">
+                        📝
+                    </div>
+                    <h2>Medication History</h2>
+                    <button class="btn btn-small" id="export-csv" style="margin-left: auto;">Export CSV</button>
+                </div>
+
+                <div id="medication-history">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No medication history yet. Start taking your medications to build your history!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, hsl(var(--text-secondary)), hsl(210 9% 21%));">
+                        ⚙️
+                    </div>
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="notifications-enabled" checked> Enable Notifications
+                    </label>
+                    <p style="color: hsl(var(--text-secondary)); font-size: 0.9rem; margin-top: 5px;">
+                        Get browser notifications for medication reminders
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="snooze-duration">Snooze Duration (minutes)</label>
+                    <select id="snooze-duration" class="form-input">
+                        <option value="5">5 minutes</option>
+                        <option value="10" selected>10 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-danger" id="clear-data">Clear All Data</button>
+                    <p style="color: hsl(var(--text-secondary)); font-size: 0.9rem; margin-top: 5px;">
+                        This will permanently delete all your medications and history
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // App State
+        let medications = JSON.parse(localStorage.getItem('medications') || '[]');
+        let medicationLogs = JSON.parse(localStorage.getItem('medicationLogs') || '[]');
+        let settings = JSON.parse(localStorage.getItem('settings') || '{"notificationsEnabled": true, "snoozeDuration": 10}');
+        let currentDate = new Date();
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            requestNotificationPermission();
+            setupEventListeners();
+            updateAllDisplays();
+            scheduleNotifications();
+        });
+
+        function initializeApp() {
+            // Set default start date to today
+            document.getElementById('med-start-date').value = new Date().toISOString().split('T')[0];
+
+            // Load settings
+            document.getElementById('notifications-enabled').checked = settings.notificationsEnabled;
+            document.getElementById('snooze-duration').value = settings.snoozeDuration;
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => switchSection(e.target.dataset.section));
+            });
+
+            // Medication form
+            document.getElementById('medication-form').addEventListener('submit', addMedication);
+            document.getElementById('med-frequency').addEventListener('change', toggleCustomTimes);
+
+            // Calendar navigation
+            document.getElementById('prev-month').addEventListener('click', () => navigateMonth(-1));
+            document.getElementById('next-month').addEventListener('click', () => navigateMonth(1));
+
+            // Settings
+            document.getElementById('notifications-enabled').addEventListener('change', updateSettings);
+            document.getElementById('snooze-duration').addEventListener('change', updateSettings);
+            document.getElementById('clear-data').addEventListener('click', clearAllData);
+
+            // Export
+            document.getElementById('export-csv').addEventListener('click', exportToCSV);
+        }
+
+        function switchSection(sectionId) {
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update displays
+            if (sectionId === 'medications') updateMedicationsList();
+            if (sectionId === 'schedule') updateScheduleDisplay();
+            if (sectionId === 'history') updateHistoryDisplay();
+        }
+
+        function toggleCustomTimes() {
+            const frequency = document.getElementById('med-frequency').value;
+            const customTimes = document.getElementById('custom-times');
+            customTimes.style.display = frequency === 'custom' ? 'block' : 'none';
+        }
+
+        function addMedication(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const medication = {
+                id: Date.now().toString(),
+                name: document.getElementById('med-name').value,
+                dosage: document.getElementById('med-dosage').value,
+                frequency: document.getElementById('med-frequency').value,
+                customTimes: document.getElementById('med-times').value,
+                startDate: document.getElementById('med-start-date').value,
+                endDate: document.getElementById('med-end-date').value,
+                instructions: document.getElementById('med-instructions').value,
+                createdAt: new Date().toISOString()
+            };
+
+            if (!validateMedication(medication)) return;
+
+            medications.push(medication);
+            saveMedications();
+            showNotification('Medication added successfully!', 'success');
+            e.target.reset();
+            document.getElementById('med-start-date').value = new Date().toISOString().split('T')[0];
+            updateAllDisplays();
+            scheduleNotifications();
+        }
+
+        function validateMedication(medication) {
+            if (!medication.name.trim()) {
+                showNotification('Please enter a medication name', 'error');
+                return false;
+            }
+            if (!medication.dosage.trim()) {
+                showNotification('Please enter the dosage', 'error');
+                return false;
+            }
+            if (!medication.frequency) {
+                showNotification('Please select a frequency', 'error');
+                return false;
+            }
+            if (medication.frequency === 'custom' && !medication.customTimes.trim()) {
+                showNotification('Please enter custom times', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function deleteMedication(id) {
+            if (confirm('Are you sure you want to delete this medication?')) {
+                medications = medications.filter(med => med.id !== id);
+                medicationLogs = medicationLogs.filter(log => log.medicationId !== id);
+                saveMedications();
+                saveLogs();
+                updateAllDisplays();
+                showNotification('Medication deleted successfully!', 'success');
+            }
+        }
+
+        function updateMedicationsList() {
+            const container = document.getElementById('medications-list');
+
+            if (medications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💊</div>
+                        <p>No medications added yet. Add your first medication to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = medications.map(med => `
+                <div class="medication-item">
+                    <div class="pill-3d"></div>
+                    <div class="medication-info">
+                        <div class="medication-name">${med.name}</div>
+                        <div class="medication-details">
+                            ${med.dosage} • ${formatFrequency(med.frequency, med.customTimes)}<br>
+                            ${med.instructions ? `Instructions: ${med.instructions}` : ''}
+                        </div>
+                    </div>
+                    <div class="medication-actions">
+                        <button class="btn btn-small btn-danger" onclick="deleteMedication('${med.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateScheduleDisplay() {
+            const todaysSchedule = getTodaysSchedule();
+            const container = document.getElementById('todays-schedule');
+
+            if (todaysSchedule.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <p>No medications scheduled for today.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = todaysSchedule.map(schedule => {
+                    const log = medicationLogs.find(log =>
+                        log.medicationId === schedule.medicationId &&
+                        log.scheduledTime === schedule.time &&
+                        log.date === new Date().toISOString().split('T')[0]
+                    );
+
+                    return `
+                        <div class="medication-item">
+                            <div class="pill-3d"></div>
+                            <div class="medication-info">
+                                <div class="medication-name">${schedule.medicationName}</div>
+                                <div class="medication-details">
+                                    ${schedule.dosage} at ${schedule.time}
+                                    ${log ? `<span class="status-badge status-${log.status}">${log.status}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="medication-actions">
+                                ${!log ? `
+                                    <button class="btn btn-small btn-success" onclick="markDose('${schedule.medicationId}', '${schedule.time}', 'taken')">Taken</button>
+                                    <button class="btn btn-small btn-warning" onclick="markDose('${schedule.medicationId}', '${schedule.time}', 'postponed')">Postpone</button>
+                                    <button class="btn btn-small btn-danger" onclick="markDose('${schedule.medicationId}', '${schedule.time}', 'missed')">Missed</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateCalendar();
+        }
+
+        function getTodaysSchedule() {
+            const today = new Date().toISOString().split('T')[0];
+            const schedule = [];
+
+            medications.forEach(med => {
+                if (new Date(med.startDate) <= new Date(today) &&
+                    (!med.endDate || new Date(med.endDate) >= new Date(today))) {
+                    const times = getMedicationTimes(med);
+                    times.forEach(time => {
+                        schedule.push({
+                            medicationId: med.id,
+                            medicationName: med.name,
+                            dosage: med.dosage,
+                            time: time
+                        });
+                    });
+                }
+            });
+
+            return schedule.sort((a, b) => a.time.localeCompare(b.time));
+        }
+
+        function getMedicationTimes(medication) {
+            const frequency = medication.frequency;
+
+            switch (frequency) {
+                case 'once-daily':
+                    return ['08:00'];
+                case 'twice-daily':
+                    return ['08:00', '20:00'];
+                case 'three-times-daily':
+                    return ['08:00', '14:00', '20:00'];
+                case 'four-times-daily':
+                    return ['08:00', '12:00', '16:00', '20:00'];
+                case 'every-other-day':
+                    // Check if today is a valid day
+                    const daysSinceStart = Math.floor((new Date() - new Date(medication.startDate)) / (1000 * 60 * 60 * 24));
+                    return daysSinceStart % 2 === 0 ? ['08:00'] : [];
+                case 'weekly':
+                    // Check if today is the same day of week as start date
+                    const startDay = new Date(medication.startDate).getDay();
+                    const today = new Date().getDay();
+                    return startDay === today ? ['08:00'] : [];
+                case 'custom':
+                    return medication.customTimes.split(',').map(time => time.trim());
+                default:
+                    return [];
+            }
+        }
+
+        function markDose(medicationId, scheduledTime, status) {
+            const log = {
+                id: Date.now().toString(),
+                medicationId: medicationId,
+                scheduledTime: scheduledTime,
+                actualTime: new Date().toLocaleTimeString(),
+                date: new Date().toISOString().split('T')[0],
+                status: status,
+                timestamp: new Date().toISOString()
+            };
+
+            // Remove any existing log for this medication and time today
+            medicationLogs = medicationLogs.filter(existingLog =>
+                !(existingLog.medicationId === medicationId &&
+                  existingLog.scheduledTime === scheduledTime &&
+                  existingLog.date === log.date)
+            );
+
+            medicationLogs.push(log);
+            saveLogs();
+            updateScheduleDisplay();
+            updateHistoryDisplay();
+            showNotification(`Dose marked as ${status}!`, 'success');
+        }
+
+        function updateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const monthYear = document.getElementById('current-month');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            monthYear.textContent = currentDate.toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric'
+            });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let calendarHTML = '';
+
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<div class="calendar-day"></div>';
+            }
+
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateString = date.toISOString().split('T')[0];
+                const isToday = dateString === new Date().toISOString().split('T')[0];
+
+                let dayClass = 'calendar-day';
+                if (isToday) dayClass += ' today';
+
+                // Check if there are medications for this day
+                const dayLogs = medicationLogs.filter(log => log.date === dateString);
+                if (dayLogs.length > 0) {
+                    const hasMissed = dayLogs.some(log => log.status === 'missed');
+                    dayClass += hasMissed ? ' has-missed' : ' has-medication';
+                }
+
+                calendarHTML += `<div class="${dayClass}">${day}</div>`;
+            }
+
+            calendar.innerHTML = calendarHTML;
+        }
+
+        function navigateMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            updateCalendar();
+        }
+
+        function updateHistoryDisplay() {
+            updateStatistics();
+            updateMedicationHistory();
+        }
+
+        function updateStatistics() {
+            const totalScheduled = getTotalScheduledDoses();
+            const totalTaken = medicationLogs.filter(log => log.status === 'taken').length;
+            const totalMissed = medicationLogs.filter(log => log.status === 'missed').length;
+            const adherenceRate = totalScheduled > 0 ? Math.round((totalTaken / totalScheduled) * 100) : 0;
+            const currentStreak = calculateCurrentStreak();
+
+            document.getElementById('adherence-rate').textContent = `${adherenceRate}%`;
+            document.getElementById('doses-taken').textContent = totalTaken;
+            document.getElementById('doses-missed').textContent = totalMissed;
+            document.getElementById('streak-days').textContent = currentStreak;
+
+            // Update progress bar
+            const progressBar = document.getElementById('overall-progress');
+            const progressText = document.getElementById('progress-text');
+            progressBar.style.width = `${adherenceRate}%`;
+            progressText.textContent = `${adherenceRate}% - ${getProgressMessage(adherenceRate)}`;
+        }
+
+        function getTotalScheduledDoses() {
+            let total = 0;
+            const today = new Date();
+
+            medications.forEach(med => {
+                const startDate = new Date(med.startDate);
+                const endDate = med.endDate ? new Date(med.endDate) : today;
+                const actualEndDate = endDate > today ? today : endDate;
+
+                if (startDate <= actualEndDate) {
+                    const daysDiff = Math.floor((actualEndDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    const timesPerDay = getMedicationTimes(med).length;
+
+                    if (med.frequency === 'every-other-day') {
+                        total += Math.ceil(daysDiff / 2) * timesPerDay;
+                    } else if (med.frequency === 'weekly') {
+                        total += Math.ceil(daysDiff / 7) * timesPerDay;
+                    } else {
+                        total += daysDiff * timesPerDay;
+                    }
+                }
+            });
+
+            return total;
+        }
+
+        function calculateCurrentStreak() {
+            const sortedLogs = medicationLogs
+                .filter(log => log.status === 'taken')
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (sortedLogs.length === 0) return 0;
+
+            let streak = 0;
+            let currentDate = new Date().toISOString().split('T')[0];
+
+            for (let i = 0; i < sortedLogs.length; i++) {
+                if (sortedLogs[i].date === currentDate) {
+                    streak++;
+                    const prevDate = new Date(currentDate);
+                    prevDate.setDate(prevDate.getDate() - 1);
+                    currentDate = prevDate.toISOString().split('T')[0];
+                } else {
+                    break;
+                }
+            }
+
+            return streak;
+        }
+
+        function getProgressMessage(adherenceRate) {
+            if (adherenceRate >= 90) return "Excellent adherence! Keep it up!";
+            if (adherenceRate >= 80) return "Good adherence! Stay consistent.";
+            if (adherenceRate >= 70) return "Room for improvement. You can do better!";
+            if (adherenceRate >= 50) return "Try to be more consistent with your medications.";
+            return "Start taking your medications regularly to improve your health.";
+        }
+
+        function updateMedicationHistory() {
+            const container = document.getElementById('medication-history');
+
+            if (medicationLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No medication history yet. Start taking your medications to build your history!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sortedLogs = medicationLogs
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 20); // Show last 20 entries
+
+            container.innerHTML = sortedLogs.map(log => {
+                const medication = medications.find(med => med.id === log.medicationId);
+                return `
+                    <div class="medication-item">
+                        <div class="medication-info">
+                            <div class="medication-name">
+                                ${medication ? medication.name : 'Unknown Medication'}
+                                <span class="status-badge status-${log.status}">${log.status}</span>
+                            </div>
+                            <div class="medication-details">
+                                ${log.date} at ${log.actualTime} (scheduled: ${log.scheduledTime})
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatFrequency(frequency, customTimes) {
+            const frequencies = {
+                'once-daily': 'Once daily',
+                'twice-daily': 'Twice daily',
+                'three-times-daily': 'Three times daily',
+                'four-times-daily': 'Four times daily',
+                'every-other-day': 'Every other day',
+                'weekly': 'Weekly',
+                'custom': `Custom times: ${customTimes}`
+            };
+            return frequencies[frequency] || frequency;
+        }
+
+        function updateSettings() {
+            settings.notificationsEnabled = document.getElementById('notifications-enabled').checked;
+            settings.snoozeDuration = parseInt(document.getElementById('snooze-duration').value);
+            localStorage.setItem('settings', JSON.stringify(settings));
+            scheduleNotifications();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                medications = [];
+                medicationLogs = [];
+                localStorage.removeItem('medications');
+                localStorage.removeItem('medicationLogs');
+                updateAllDisplays();
+                showNotification('All data cleared successfully!', 'success');
+            }
+        }
+
+        function exportToCSV() {
+            if (medicationLogs.length === 0) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+
+            const headers = ['Date', 'Medication', 'Scheduled Time', 'Actual Time', 'Status'];
+            const csvData = medicationLogs.map(log => {
+                const medication = medications.find(med => med.id === log.medicationId);
+                return [
+                    log.date,
+                    medication ? medication.name : 'Unknown',
+                    log.scheduledTime,
+                    log.actualTime,
+                    log.status
+                ];
+            });
+
+            const csvContent = [headers, ...csvData]
+                .map(row => row.map(field => `"${field}"`).join(','))
+                .join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `medication-history-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showNotification('History exported successfully!', 'success');
+        }
+
+        // Notification System
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        function scheduleNotifications() {
+            if (!settings.notificationsEnabled || !('Notification' in window) || Notification.permission !== 'granted') {
+                return;
+            }
+
+            // Clear existing timeouts (in a real app, you'd use a more sophisticated system)
+            // Schedule notifications for today's remaining doses
+            const todaysSchedule = getTodaysSchedule();
+            const now = new Date();
+
+            todaysSchedule.forEach(schedule => {
+                const [hours, minutes] = schedule.time.split(':');
+                const scheduledTime = new Date();
+                scheduledTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+                if (scheduledTime > now) {
+                    const timeUntilDose = scheduledTime - now;
+                    setTimeout(() => {
+                        showMedicationReminder(schedule);
+                    }, timeUntilDose);
+                }
+            });
+        }
+
+        function showMedicationReminder(schedule) {
+            if (settings.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification(`Time for ${schedule.medicationName}`, {
+                    body: `Take ${schedule.dosage} at ${schedule.time}`,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%230080FF"/><text x="50" y="60" text-anchor="middle" fill="white" font-size="40">💊</text></svg>',
+                    tag: `medication-${schedule.medicationId}-${schedule.time}`,
+                    requireInteraction: true
+                });
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <strong>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</strong>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        function updateAllDisplays() {
+            updateMedicationsList();
+            updateScheduleDisplay();
+            updateHistoryDisplay();
+        }
+
+        function saveMedications() {
+            localStorage.setItem('medications', JSON.stringify(medications));
+        }
+
+        function saveLogs() {
+            localStorage.setItem('medicationLogs', JSON.stringify(medicationLogs));
+        }
+    </script>
+</body>
+</html>
