@@ -1,7 +1,5 @@
 # MedTracker Pro 💊
 
-![MedTracker Pro Screenshot](https://via.placeholder.com/800x400.png?text=MedTracker+Pro+Screenshot) <!-- Replace with actual screenshot -->
-
 A modern medication reminder and adherence tracking web application with intuitive UI, statistics, and calendar view.
 
 ## Features ✨
