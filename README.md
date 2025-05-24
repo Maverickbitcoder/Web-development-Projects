@@ -41,6 +41,15 @@ An intelligent, responsive medication tracking web app featuring dynamic form va
 
 ---
 
+### 8.🧠 Neon Sudoku 3D – Futuristic Puzzle Experience
+
+A visually immersive, single-page Sudoku game with animated 3D neon UI, 
+live validation, hint system, solution reveal, and win celebration — 
+all built in pure HTML, CSS (glass + glow + 3D), and JavaScript 
+(vanilla, modular logic). No libraries, just smart design and clean code.
+
+---
+
 ## 🚀 Technologies Used Across Projects
 - **HTML5** for semantic structure  
 - **CSS3 / Tailwind CSS** for styling and responsive design  
