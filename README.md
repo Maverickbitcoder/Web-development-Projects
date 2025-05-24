@@ -36,6 +36,11 @@ A fun, interactive typing speed challenge that measures WPM and accuracy, lettin
 
 ---
 
+### 7. 💊 MedTracker Pro – Smart Medication Manager  
+An intelligent, responsive medication tracking web app featuring dynamic form validation, real-time dashboard updates, browser-based reminders, 3D pill animations, and streak-based analytics — all crafted using **HTML**, **CSS (custom + grid)**, and **JavaScript (ES6+ modular)**.
+
+---
+
 ## 🚀 Technologies Used Across Projects
 - **HTML5** for semantic structure  
 - **CSS3 / Tailwind CSS** for styling and responsive design  
