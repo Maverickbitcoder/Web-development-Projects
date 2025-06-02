@@ -49,6 +49,10 @@ all built in pure HTML, CSS (glass + glow + 3D), and JavaScript
 (vanilla, modular logic). No libraries, just smart design and clean code.
 
 ---
+### 9. 🧊 FridgeBuddy Pro – Smart Kitchen & Recipe Assistant  
+A responsive, single-page web application to manage fridge inventory, discover AI-powered recipes, plan weekly meals, track nutrition, and generate smart shopping lists. Built entirely with HTML, CSS (modern UI with theme toggle), and vanilla JavaScript using localStorage — no frameworks, just clean, modular code.
+
+---
 
 ## 🚀 Technologies Used Across Projects
 - **HTML5** for semantic structure  
