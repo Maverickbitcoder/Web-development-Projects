@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeBuddy Pro - Smart Kitchen Management</title>
+    <style>
+        :root {
+            --primary: #2D5A27;
+            --primary-light: #4A7C59;
+            --secondary: #F4F7F5;
+            --accent: #FF6B35;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --info: #3498DB;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --gradient-primary: linear-gradient(135deg, #2D5A27, #4A7C59);
+            --gradient-accent: linear-gradient(135deg, #FF6B35, #FF8F65);
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --secondary: #1A1A1A;
+            --white: #2D2D2D;
+            --light: #3A3A3A;
+            --dark: #F0F0F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--secondary);
+            color: var(--dark);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 3.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Navigation Styles */
+        .nav-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark);
+        }
+
+        .nav-tab:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-primary);
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--primary-light);
+            font-weight: 500;
+        }
+
+        .stat-card.fresh {
+            --gradient: var(--gradient-primary);
+            --color: var(--success);
+        }
+
+        .stat-card.warning {
+            --gradient: linear-gradient(135deg, #F39C12, #E67E22);
+            --color: var(--warning);
+        }
+
+        .stat-card.expired {
+            --gradient: linear-gradient(135deg, #E74C3C, #C0392B);
+            --color: var(--danger);
+        }
+
+        .stat-card.total {
+            --gradient: linear-gradient(135deg, #3498DB, #2980B9);
+            --color: var(--info);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--light);
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-light);
+            font-size: 1.2rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            background: var(--white);
+            border: 2px solid var(--light);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark);
+        }
+
+        .quick-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-btn.primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Filter Tags */
+        .filter-container {
+            margin-bottom: 2rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: 2px solid var(--light);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .filter-tag:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .filter-tag.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* Card Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--status-color);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card.fresh {
+            --status-color: var(--success);
+        }
+
+        .card.warning {
+            --status-color: var(--warning);
+        }
+
+        .card.expired {
+            --status-color: var(--danger);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-icon {
+            font-size: 1.5rem;
+        }
+
+        .item-category {
+            font-size: 0.9rem;
+            color: var(--primary-light);
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: var(--secondary);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .edit-btn:hover {
+            background: var(--info);
+            color: var(--white);
+        }
+
+        .delete-btn:hover {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .card-body {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: var(--primary-light);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--status-bg);
+            color: var(--status-text);
+        }
+
+        .status-badge.fresh {
+            --status-bg: rgba(39, 174, 96, 0.1);
+            --status-text: var(--success);
+        }
+
+        .status-badge.warning {
+            --status-bg: rgba(243, 156, 18, 0.1);
+            --status-text: var(--warning);
+        }
+
+        .status-badge.expired {
+            --status-bg: rgba(231, 76, 60, 0.1);
+            --status-text: var(--danger);
+        }
+
+        /* Recipe Cards */
+        .recipe-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .recipe-header {
+            margin-bottom: 1rem;
+        }
+
+        .recipe-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--primary-light);
+        }
+
+        .ingredients-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ingredient-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .ingredient-available {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .ingredient-missing {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .recipe-instructions {
+            color: var(--primary-light);
+            line-height: 1.6;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .close-btn {
+            background: var(--secondary);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--light);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--secondary);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Meal Planner */
+        .meal-planner {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .meal-day {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .meal-day:last-child {
+            border-bottom: none;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .meal-select {
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: var(--border-radius);
+            background: var(--secondary);
+            font-size: 1rem;
+        }
+
+        /* Shopping List */
+        .shopping-list {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--light);
+            transition: var(--transition);
+        }
+
+        .shopping-item:last-child {
+            border-bottom: none;
+        }
+
+        .shopping-item:hover {
+            background: var(--secondary);
+            margin: 0 -1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .shopping-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .shopping-item.completed {
+            opacity: 0.6;
+        }
+
+        .shopping-item.completed .shopping-text {
+            text-decoration: line-through;
+        }
+
+        .shopping-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--primary-light);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                min-width: auto;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .meal-day {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+
+        /* Advanced Features */
+        .barcode-scanner {
+            background: var(--white);
+            border: 3px dashed var(--light);
+            border-radius: var(--border-radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .barcode-scanner:hover {
+            border-color: var(--primary);
+            background: rgba(45, 90, 39, 0.05);
+        }
+
+        .scanner-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .nutrition-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+        }
+
+        .nutrition-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nutrition-label {
+            font-size: 0.8rem;
+            color: var(--primary-light);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <div class="logo">
+                <span class="logo-icon">🧊</span>
+                <h1>FridgeBuddy Pro</h1>
+            </div>
+            <p class="tagline">Smart Kitchen Management & Recipe Discovery Platform</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('inventory')">
+                    <span>📦</span> Smart Inventory
+                </button>
+                <button class="nav-tab" onclick="switchTab('recipes')">
+                    <span>🍳</span> Recipe Engine
+                </button>
+                <button class="nav-tab" onclick="switchTab('planner')">
+                    <span>📅</span> Meal Planner
+                </button>
+                <button class="nav-tab" onclick="switchTab('shopping')">
+                    <span>🛒</span> Smart Shopping
+                </button>
+                <button class="nav-tab" onclick="switchTab('analytics')">
+                    <span>📊</span> Analytics Hub
+                </button>
+                <button class="nav-tab" onclick="switchTab('nutrition')">
+                    <span>🥗</span> Nutrition Tracker
+                </button>
+            </div>
+        </nav>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content active">
+            <!-- Stats Dashboard -->
+            <div class="stats-grid">
+                <div class="stat-card fresh">
+                    <div class="stat-number" id="fresh-count">0</div>
+                    <div class="stat-label">Fresh Items</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-number" id="warning-count">0</div>
+                    <div class="stat-label">Expiring Soon</div>
+                </div>
+                <div class="stat-card expired">
+                    <div class="stat-number" id="expired-count">0</div>
+                    <div class="stat-label">Expired Items</div>
+                </div>
+                <div class="stat-card total">
+                    <div class="stat-number" id="total-count">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-btn primary" onclick="openAddItemModal()">
+                    <span>➕</span> Add New Item
+                </button>
+                <button class="quick-btn" onclick="scanBarcode()">
+                    <span>📱</span> Scan Barcode
+                </button>
+                <button class="quick-btn" onclick="bulkImport()">
+                    <span>📄</span> Bulk Import
+                </button>
+                <button class="quick-btn" onclick="exportData()">
+                    <span>📤</span> Export Data
+                </button>
+                <button class="quick-btn" onclick="generateShoppingList()">
+                    <span>🛒</span> Generate Shopping List
+                </button>
+            </div>
+
+            <!-- Section Header with Search -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>📦</span> Your Smart Inventory
+                </h2>
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search items..." id="inventorySearch">
+                </div>
+            </div>
+
+            <!-- Filter Tags -->
+            <div class="filter-container">
+                <div class="filter-tags">
+                    <div class="filter-tag active" onclick="filterByCategory('all')">All Items</div>
+                    <div class="filter-tag" onclick="filterByCategory('fresh')">Fresh</div>
+                    <div class="filter-tag" onclick="filterByCategory('warning')">Expiring Soon</div>
+                    <div class="filter-tag" onclick="filterByCategory('expired')">Expired</div>
+                    <div class="filter-tag" onclick="filterByCategory('vegetables')">🥬 Vegetables</div>
+                    <div class="filter-tag" onclick="filterByCategory('fruits')">🍎 Fruits</div>
+                    <div class="filter-tag" onclick="filterByCategory('dairy')">🥛 Dairy</div>
+                    <div class="filter-tag" onclick="filterByCategory('meat')">🥩 Meat</div>
+                    <div class="filter-tag" onclick="filterByCategory('frozen')">🧊 Frozen</div>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="inventoryGrid" class="grid">
+                <!-- Items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Recipes Tab -->
+        <div id="recipes" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>🍳</span> AI Recipe Engine
+                </h2>
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search recipes..." id="recipeSearch">
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="quick-btn active" onclick="filterRecipes('all')">
+                    <span>🍽️</span> All Recipes
+                </button>
+                <button class="quick-btn" onclick="filterRecipes('canMake')">
+                    <span>✅</span> Can Make Now
+                </button>
+                <button class="quick-btn" onclick="filterRecipes('quick')">
+                    <span>⚡</span> Quick Meals
+                </button>
+                <button class="quick-btn" onclick="filterRecipes('healthy')">
+                    <span>🥗</span> Healthy Options
+                </button>
+                <button class="quick-btn" onclick="filterRecipes('vegetarian')">
+                    <span>🌱</span> Vegetarian
+                </button>
+            </div>
+
+            <div id="recipesGrid" class="grid">
+                <!-- Recipes will be populated here -->
+            </div>
+        </div>
+
+        <!-- Meal Planner Tab -->
+        <div id="planner" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>📅</span> Smart Meal Planner
+                </h2>
+                <button class="quick-btn primary" onclick="generateWeeklyPlan()">
+                    <span>🎲</span> Auto-Generate Weekly Plan
+                </button>
+            </div>
+
+            <div class="meal-planner">
+                <div class="meal-day">
+                    <div class="day-name">Monday</div>
+                    <select class="meal-select" id="monday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('monday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Tuesday</div>
+                    <select class="meal-select" id="tuesday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('tuesday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Wednesday</div>
+                    <select class="meal-select" id="wednesday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('wednesday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Thursday</div>
+                    <select class="meal-select" id="thursday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('thursday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Friday</div>
+                    <select class="meal-select" id="friday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('friday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Saturday</div>
+                    <select class="meal-select" id="saturday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('saturday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+                <div class="meal-day">
+                    <div class="day-name">Sunday</div>
+                    <select class="meal-select" id="sunday-meal">
+                        <option value="">Select a meal...</option>
+                    </select>
+                    <button class="quick-btn" onclick="addMealToShopping('sunday')">
+                        <span>🛒</span> Add to Shopping
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopping Tab -->
+        <div id="shopping" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>🛒</span> Smart Shopping List
+                </h2>
+                <div class="quick-actions">
+                    <button class="quick-btn primary" onclick="addShoppingItem()">
+                        <span>➕</span> Add Item
+                    </button>
+                    <button class="quick-btn" onclick="clearCompleted()">
+                        <span>🗑️</span> Clear Completed
+                    </button>
+                    <button class="quick-btn" onclick="shareShoppingList()">
+                        <span>📤</span> Share List
+                    </button>
+                </div>
+            </div>
+
+            <div class="barcode-scanner" onclick="scanBarcode()">
+                <div class="scanner-icon">📱</div>
+                <div>Tap to scan barcodes and add items instantly</div>
+            </div>
+
+            <div class="shopping-list" id="shoppingList">
+                <!-- Shopping items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>📊</span> Kitchen Analytics Dashboard
+                </h2>
+                <button class="quick-btn primary" onclick="generateReport()">
+                    <span>📄</span> Generate Detailed Report
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card total">
+                    <div class="stat-number" id="total-tracked">0</div>
+                    <div class="stat-label">Items Tracked</div>
+                </div>
+                <div class="stat-card fresh">
+                    <div class="stat-number" id="money-saved">$0</div>
+                    <div class="stat-label">Money Saved</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-number" id="waste-prevented">0</div>
+                    <div class="stat-label">Waste Prevented</div>
+                </div>
+                <div class="stat-card expired">
+                    <div class="stat-number" id="recipes-made">0</div>
+                    <div class="stat-label">Recipes Completed</div>
+                </div>
+            </div>
+
+            <div id="analyticsContent" class="grid">
+                <!-- Analytics content will be populated here -->
+            </div>
+        </div>
+
+        <!-- Nutrition Tab -->
+        <div id="nutrition" class="tab-content">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>🥗</span> Nutrition Tracker
+                </h2>
+                <button class="quick-btn primary" onclick="analyzeNutrition()">
+                    <span>🔬</span> Analyze Current Inventory
+                </button>
+            </div>
+
+            <div id="nutritionContent" class="grid">
+                <!-- Nutrition content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit Item -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Item</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="itemForm">
+                <div class="form-group">
+                    <label class="form-label" for="itemName">Item Name</label>
+                    <input type="text" id="itemName" class="form-input" required placeholder="e.g., Organic Tomatoes">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemCategory">Category</label>
+                    <select id="itemCategory" class="form-select" required>
+                        <option value="">Select Category</option>
+                        <option value="vegetables">🥬 Vegetables</option>
+                        <option value="fruits">🍎 Fruits</option>
+                        <option value="dairy">🥛 Dairy Products</option>
+                        <option value="meat">🥩 Meat & Seafood</option>
+                        <option value="grains">🌾 Grains & Cereals</option>
+                        <option value="beverages">🥤 Beverages</option>
+                        <option value="condiments">🧂 Condiments & Spices</option>
+                        <option value="frozen">🧊 Frozen Foods</option>
+                        <option value="snacks">🍿 Snacks & Treats</option>
+                        <option value="bakery">🍞 Bakery Items</option>
+                        <option value="other">📦 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemQuantity">Quantity</label>
+                    <input type="text" id="itemQuantity" class="form-input" placeholder="e.g., 2 pieces, 1 bottle, 500g" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemExpiry">Expiry Date</label>
+                    <input type="date" id="itemExpiry" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemLocation">Storage Location</label>
+                    <select id="itemLocation" class="form-select">
+                        <option value="fridge">🧊 Refrigerator</option>
+                        <option value="freezer">❄️ Freezer</option>
+                        <option value="pantry">🏠 Pantry</option>
+                        <option value="counter">🏠 Counter</option>
+                        <option value="spice-rack">🧂 Spice Rack</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="itemCost">Cost (Optional)</label>
+                    <input type="number" id="itemCost" class="form-input" placeholder="0.00" step="0.01" min="0">
+                </div>
+                <button type="submit" class="submit-btn">Save Item</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let fridgeItems = JSON.parse(localStorage.getItem('fridgeItems')) || [];
+        let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
+        let mealPlan = JSON.parse(localStorage.getItem('mealPlan')) || {};
+        let nutritionData = JSON.parse(localStorage.getItem('nutritionData')) || {};
+        let currentEditingId = null;
+        let currentFilter = 'all';
+
+        // Enhanced category icons and data
+        const categoryIcons = {
+            vegetables: '🥬',
+            fruits: '🍎',
+            dairy: '🥛',
+            meat: '🥩',
+            grains: '🌾',
+            beverages: '🥤',
+            condiments: '🧂',
+            frozen: '🧊',
+            snacks: '🍿',
+            bakery: '🍞',
+            other: '📦'
+        };
+
+        // Enhanced recipe database with nutrition data
+        const recipeDatabase = [
+            {
+                id: 1,
+                name: "Mediterranean Quinoa Bowl",
+                cookTime: "25 mins",
+                difficulty: "Easy",
+                category: "healthy",
+                cuisine: "Mediterranean",
+                ingredients: ["quinoa", "vegetables", "olive oil", "feta cheese", "olives"],
+                instructions: "Cook quinoa according to package directions. Roast vegetables with olive oil at 400°F for 20 minutes. Combine quinoa and vegetables, top with feta and olives. Drizzle with olive oil and season.",
+                nutrition: { calories: 380, protein: "14g", carbs: "52g", fat: "12g", fiber: "8g", sodium: "420mg" },
+                tags: ["vegetarian", "healthy", "mediterranean"]
+            },
+            {
+                id: 2,
+                name: "Green Power Smoothie",
+                cookTime: "5 mins",
+                difficulty: "Easy",
+                category: "quick",
+                cuisine: "American",
+                ingredients: ["spinach", "banana", "Greek yogurt", "honey", "almond milk"],
+                instructions: "Add all ingredients to blender. Blend until smooth and creamy. Add ice if desired consistency is thinner. Serve immediately.",
+                nutrition: { calories: 220, protein: "15g", carbs: "35g", fat: "4g", fiber: "5g", sodium: "95mg" },
+                tags: ["vegetarian", "healthy", "quick", "breakfast"]
+            },
+            {
+                id: 3,
+                name: "Creamy Mushroom Pasta",
+                cookTime: "30 mins",
+                difficulty: "Medium",
+                category: "comfort",
+                cuisine: "Italian",
+                ingredients: ["pasta", "mushrooms", "heavy cream", "garlic", "parmesan", "white wine"],
+                instructions: "Cook pasta al dente. Sauté mushrooms and garlic until golden. Add wine and reduce. Pour in cream, add parmesan. Toss with pasta and serve hot.",
+                nutrition: { calories: 520, protein: "18g", carbs: "65g", fat: "22g", fiber: "4g", sodium: "680mg" },
+                tags: ["vegetarian", "comfort", "italian"]
+            },
+            {
+                id: 4,
+                name: "Asian Chicken Stir-Fry",
+                cookTime: "20 mins",
+                difficulty: "Easy",
+                category: "quick",
+                cuisine: "Asian",
+                ingredients: ["chicken breast", "mixed vegetables", "soy sauce", "ginger", "jasmine rice", "sesame oil"],
+                instructions: "Cut chicken into strips. Heat oil in wok, cook chicken until done. Add vegetables and stir-fry. Season with soy sauce and ginger. Serve over rice.",
+                nutrition: { calories: 420, protein: "32g", carbs: "45g", fat: "12g", fiber: "4g", sodium: "890mg" },
+                tags: ["high-protein", "quick", "asian"]
+            },
+            {
+                id: 5,
+                name: "Fresh Garden Salad",
+                cookTime: "15 mins",
+                difficulty: "Easy",
+                category: "healthy",
+                cuisine: "American",
+                ingredients: ["mixed greens", "cherry tomatoes", "cucumber", "carrots", "olive oil", "balsamic vinegar"],
+                instructions: "Wash and chop all vegetables. Combine in large bowl. Whisk olive oil and vinegar for dressing. Toss salad with dressing just before serving.",
+                nutrition: { calories: 150, protein: "4g", carbs: "12g", fat: "10g", fiber: "6g", sodium: "25mg" },
+                tags: ["vegetarian", "healthy", "low-calorie", "vegan"]
+            },
+            {
+                id: 6,
+                name: "Spicy Fish Tacos",
+                cookTime: "25 mins",
+                difficulty: "Medium",
+                category: "fusion",
+                cuisine: "Mexican",
+                ingredients: ["white fish", "corn tortillas", "cabbage", "lime", "chili powder", "greek yogurt"],
+                instructions: "Season fish with spices and grill. Warm tortillas. Shred cabbage and mix with lime juice. Assemble tacos with fish, cabbage, and yogurt sauce.",
+                nutrition: { calories: 350, protein: "28g", carbs: "32g", fat: "14g", fiber: "6g", sodium: "520mg" },
+                tags: ["high-protein", "mexican", "spicy"]
+            },
+            {
+                id: 7,
+                name: "Vegetable Curry",
+                cookTime: "35 mins",
+                difficulty: "Medium",
+                category: "comfort",
+                cuisine: "Indian",
+                ingredients: ["mixed vegetables", "coconut milk", "curry powder", "onion", "garlic", "basmati rice"],
+                instructions: "Sauté onion and garlic. Add vegetables and curry powder. Pour in coconut milk and simmer until vegetables are tender. Serve over rice.",
+                nutrition: { calories: 310, protein: "8g", carbs: "48g", fat: "12g", fiber: "8g", sodium: "380mg" },
+                tags: ["vegetarian", "vegan", "indian", "comfort"]
+            },
+            {
+                id: 8,
+                name: "Protein Pancakes",
+                cookTime: "15 mins",
+                difficulty: "Easy",
+                category: "quick",
+                cuisine: "American",
+                ingredients: ["protein powder", "banana", "eggs", "oats", "Greek yogurt", "berries"],
+                instructions: "Mash banana and mix with eggs. Add protein powder and oats. Cook pancakes in non-stick pan. Serve with yogurt and berries.",
+                nutrition: { calories: 290, protein: "25g", carbs: "28g", fat: "8g", fiber: "5g", sodium: "180mg" },
+                tags: ["high-protein", "healthy", "breakfast"]
+            }
+        ];
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            populateMealSelects();
+            renderInventory();
+            renderRecipes();
+            renderShoppingList();
+            renderAnalytics();
+            renderNutrition();
+            setupSearchFilters();
+            updateStats();
+        });
+
+        // Theme Management
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            const themeToggle = document.querySelector('.theme-toggle');
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Tab Management
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+
+            // Refresh content based on tab
+            switch(tabName) {
+                case 'recipes':
+                    renderRecipes();
+                    break;
+                case 'analytics':
+                    renderAnalytics();
+                    break;
+                case 'shopping':
+                    renderShoppingList();
+                    break;
+                case 'nutrition':
+                    renderNutrition();
+                    break;
+            }
+        }
+
+        // Utility Functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function getDaysUntilExpiry(expiryDate) {
+            const today = new Date();
+            const expiry = new Date(expiryDate);
+            const diffTime = expiry - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getExpiryStatus(expiryDate) {
+            const days = getDaysUntilExpiry(expiryDate);
+            if (days < 0) return 'expired';
+            if (days <= 3) return 'warning';
+            return 'fresh';
+        }
+
+        function getExpiryText(expiryDate) {
+            const days = getDaysUntilExpiry(expiryDate);
+            if (days < 0) return `Expired ${Math.abs(days)} day(s) ago`;
+            if (days === 0) return 'Expires today';
+            if (days === 1) return 'Expires tomorrow';
+            return `Expires in ${days} days`;
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('fridgeItems', JSON.stringify(fridgeItems));
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+            localStorage.setItem('mealPlan', JSON.stringify(mealPlan));
+            localStorage.setItem('nutritionData', JSON.stringify(nutritionData));
+        }
+
+        // Enhanced Inventory Management
+        function renderInventory() {
+            const grid = document.getElementById('inventoryGrid');
+            let itemsToShow = fridgeItems;
+
+            // Apply current filter
+            if (currentFilter !== 'all') {
+                if (['fresh', 'warning', 'expired'].includes(currentFilter)) {
+                    itemsToShow = fridgeItems.filter(item => getExpiryStatus(item.expiry) === currentFilter);
+                } else {
+                    itemsToShow = fridgeItems.filter(item => item.category === currentFilter);
+                }
+            }
+
+            if (itemsToShow.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🧊</div>
+                        <div class="empty-title">No items found</div>
+                        <div class="empty-description">Try adjusting your filters or add some items to get started with smart inventory management.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = itemsToShow.map(item => {
+                const status = getExpiryStatus(item.expiry);
+                const expiryText = getExpiryText(item.expiry);
+                const icon = categoryIcons[item.category] || '📦';
+
+                return `
+                    <div class="card ${status}">
+                        <div class="card-header">
+                            <div class="item-info">
+                                <div class="item-name">
+                                    <span class="item-icon">${icon}</span>
+                                    ${item.name}
+                                </div>
+                                <div class="item-category">${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="action-btn edit-btn" onclick="editItem('${item.id}')" title="Edit Item">✏️</button>
+                                <button class="action-btn delete-btn" onclick="deleteItem('${item.id}')" title="Delete Item">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="detail-row">
+                                <span class="detail-label">Quantity:</span>
+                                <span class="detail-value">${item.quantity}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">${item.location || 'Fridge'}</span>
+                            </div>
+                            ${item.cost ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Cost:</span>
+                                <span class="detail-value">$${parseFloat(item.cost).toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="status-badge ${status}">${expiryText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const totalItems = fridgeItems.length;
+            const freshItems = fridgeItems.filter(item => getExpiryStatus(item.expiry) === 'fresh').length;
+            const warningItems = fridgeItems.filter(item => getExpiryStatus(item.expiry) === 'warning').length;
+            const expiredItems = fridgeItems.filter(item => getExpiryStatus(item.expiry) === 'expired').length;
+
+            document.getElementById('fresh-count').textContent = freshItems;
+            document.getElementById('warning-count').textContent = warningItems;
+            document.getElementById('expired-count').textContent = expiredItems;
+            document.getElementById('total-count').textContent = totalItems;
+        }
+
+        function filterByCategory(category) {
+            currentFilter = category;
+
+            // Update active filter tag
+            document.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderInventory();
+        }
+
+        // Enhanced Recipe Management
+        function renderRecipes() {
+            const grid = document.getElementById('recipesGrid');
+            const availableIngredients = fridgeItems.map(item => item.category.toLowerCase());
+
+            const suggestedRecipes = recipeDatabase.map(recipe => {
+                const availableIngredientsCount = recipe.ingredients.filter(ingredient =>
+                    availableIngredients.includes(ingredient) ||
+                    fridgeItems.some(item => item.name.toLowerCase().includes(ingredient.toLowerCase()))
+                ).length;
+
+                return {
+                    ...recipe,
+                    availableIngredientsCount,
+                    canMake: availableIngredientsCount >= Math.ceil(recipe.ingredients.length * 0.7)
+                };
+            }).sort((a, b) => b.availableIngredientsCount - a.availableIngredientsCount);
+
+            if (fridgeItems.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍳</div>
+                        <div class="empty-title">No ingredients available</div>
+                        <div class="empty-description">Add some items to your inventory to unlock personalized recipe suggestions powered by AI.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = suggestedRecipes.map(recipe => `
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <div class="recipe-title">
+                            <span>🍽️</span>
+                            ${recipe.name}
+                        </div>
+                        <div class="recipe-meta">
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                ${recipe.cookTime}
+                            </div>
+                            <div class="meta-item">
+                                <span>📊</span>
+                                ${recipe.difficulty}
+                            </div>
+                            <div class="meta-item">
+                                <span>🌍</span>
+                                ${recipe.cuisine}
+                            </div>
+                            <div class="meta-item">
+                                <span>✅</span>
+                                ${recipe.availableIngredientsCount}/${recipe.ingredients.length}
+                            </div>
+                            <div class="meta-item">
+                                <span>🔥</span>
+                                ${recipe.nutrition.calories} cal
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ingredients-grid">
+                        ${recipe.ingredients.map(ingredient => {
+                            const isAvailable = availableIngredients.includes(ingredient) ||
+                                fridgeItems.some(item => item.name.toLowerCase().includes(ingredient.toLowerCase()));
+                            return `<span class="ingredient-tag ${isAvailable ? 'ingredient-available' : 'ingredient-missing'}">${ingredient}</span>`;
+                        }).join('')}
+                    </div>
+                    <div class="recipe-instructions">
+                        ${recipe.instructions}
+                    </div>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${recipe.nutrition.protein}</div>
+                            <div class="nutrition-label">Protein</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${recipe.nutrition.carbs}</div>
+                            <div class="nutrition-label">Carbs</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${recipe.nutrition.fat}</div>
+                            <div class="nutrition-label">Fat</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${recipe.nutrition.fiber}</div>
+                            <div class="nutrition-label">Fiber</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRecipes(type) {
+            // Update active button
+            document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Future implementation: filter recipes by type
+            renderRecipes();
+        }
+
+        // Meal Planner Functions
+        function populateMealSelects() {
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            days.forEach(day => {
+                const select = document.getElementById(`${day}-meal`);
+                select.innerHTML = '<option value="">Select a meal...</option>' +
+                    recipeDatabase.map(recipe =>
+                        `<option value="${recipe.id}">${recipe.name}</option>`
+                    ).join('');
+
+                // Load saved meal plan
+                if (mealPlan[day]) {
+                    select.value = mealPlan[day];
+                }
+
+                select.addEventListener('change', function() {
+                    mealPlan[day] = this.value;
+                    saveToLocalStorage();
+                });
+            });
+        }
+
+        function generateWeeklyPlan() {
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            days.forEach(day => {
+                const randomRecipe = recipeDatabase[Math.floor(Math.random() * recipeDatabase.length)];
+                document.getElementById(`${day}-meal`).value = randomRecipe.id;
+                mealPlan[day] = randomRecipe.id.toString();
+            });
+
+            saveToLocalStorage();
+        }
+
+        function addMealToShopping(day) {
+            const mealId = mealPlan[day];
+            if (!mealId) return;
+
+            const recipe = recipeDatabase.find(r => r.id == mealId);
+            if (recipe) {
+                recipe.ingredients.forEach(ingredient => {
+                    if (!shoppingList.find(item => item.name.toLowerCase().includes(ingredient.toLowerCase()))) {
+                        shoppingList.push({
+                            id: generateId(),
+                            name: ingredient,
+                            completed: false,
+                            addedFrom: recipe.name,
+                            category: 'meal-plan'
+                        });
+                    }
+                });
+                saveToLocalStorage();
+                renderShoppingList();
+                alert(`Ingredients from ${recipe.name} added to shopping list!`);
+            }
+        }
+
+        // Shopping List Functions
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingList');
+
+            if (shoppingList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛒</div>
+                        <div class="empty-title">Your shopping list is empty</div>
+                        <div class="empty-description">Add items manually or generate from your meal planner to get started with smart shopping.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = shoppingList.map(item => `
+                <div class="shopping-item ${item.completed ? 'completed' : ''}">
+                    <input type="checkbox" class="shopping-checkbox"
+                           ${item.completed ? 'checked' : ''}
+                           onchange="toggleShoppingItem('${item.id}')">
+                    <div class="shopping-text">
+                        <div>${item.name}</div>
+                        ${item.addedFrom ? `<small>From: ${item.addedFrom}</small>` : ''}
+                    </div>
+                    <button class="action-btn delete-btn" onclick="removeShoppingItem('${item.id}')" title="Remove">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function addShoppingItem() {
+            const name = prompt('Enter item name:');
+            if (name && name.trim()) {
+                shoppingList.push({
+                    id: generateId(),
+                    name: name.trim(),
+                    completed: false,
+                    category: 'manual'
+                });
+                saveToLocalStorage();
+                renderShoppingList();
+            }
+        }
+
+        function toggleShoppingItem(id) {
+            const item = shoppingList.find(item => item.id === id);
+            if (item) {
+                item.completed = !item.completed;
+                saveToLocalStorage();
+                renderShoppingList();
+            }
+        }
+
+        function removeShoppingItem(id) {
+            shoppingList = shoppingList.filter(item => item.id !== id);
+            saveToLocalStorage();
+            renderShoppingList();
+        }
+
+        function clearCompleted() {
+            shoppingList = shoppingList.filter(item => !item.completed);
+            saveToLocalStorage();
+            renderShoppingList();
+        }
+
+        function shareShoppingList() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My FridgeBuddy Shopping List',
+                    text: shoppingList.map(item => `${item.completed ? '✅' : '⭕'} ${item.name}`).join('\n')
+                });
+            } else {
+                const text = shoppingList.map(item => `${item.completed ? '✅' : '⭕'} ${item.name}`).join('\n');
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Shopping list copied to clipboard!');
+                });
+            }
+        }
+
+        function generateShoppingList() {
+            // Generate based on expiring items and meal plan
+            const expiringItems = fridgeItems.filter(item => getExpiryStatus(item.expiry) === 'warning');
+
+            expiringItems.forEach(item => {
+                if (!shoppingList.find(shopItem => shopItem.name.toLowerCase() === item.name.toLowerCase())) {
+                    shoppingList.push({
+                        id: generateId(),
+                        name: item.name,
+                        completed: false,
+                        addedFrom: 'Auto-generated (expiring soon)',
+                        category: 'auto-generated'
+                    });
+                }
+            });
+
+            saveToLocalStorage();
+            renderShoppingList();
+            alert(`Added ${expiringItems.length} items that are expiring soon to your shopping list!`);
+        }
+
+        // Analytics Functions
+        function renderAnalytics() {
+            const totalTracked = fridgeItems.length + (JSON.parse(localStorage.getItem('historicalItems')) || []).length;
+            const totalValue = fridgeItems.reduce((sum, item) => sum + (parseFloat(item.cost) || 0), 0);
+            const moneySaved = Math.floor(totalTracked * 2.5);
+            const wastePrevented = fridgeItems.filter(item => getExpiryStatus(item.expiry) !== 'expired').length;
+            const recipesMade = Object.values(mealPlan).filter(meal => meal).length;
+
+            document.getElementById('total-tracked').textContent = totalTracked;
+            document.getElementById('money-saved').textContent = `$${moneySaved}`;
+            document.getElementById('waste-prevented').textContent = wastePrevented;
+            document.getElementById('recipes-made').textContent = recipesMade;
+
+            const content = document.getElementById('analyticsContent');
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Inventory Value</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Total Value:</span>
+                            <span class="detail-value">$${totalValue.toFixed(2)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Avg. Item Value:</span>
+                            <span class="detail-value">$${fridgeItems.length ? (totalValue / fridgeItems.length).toFixed(2) : '0.00'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Waste Prevention</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Items Saved:</span>
+                            <span class="detail-value">${wastePrevented}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Success Rate:</span>
+                            <span class="detail-value">${fridgeItems.length ? Math.round((wastePrevented / fridgeItems.length) * 100) : 0}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateReport() {
+            alert('Detailed analytics report feature would generate comprehensive insights here.');
+        }
+
+        // Nutrition Functions
+        function renderNutrition() {
+            const content = document.getElementById('nutritionContent');
+
+            if (fridgeItems.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🥗</div>
+                        <div class="empty-title">No nutrition data available</div>
+                        <div class="empty-description">Add items to your inventory to track nutritional value and get health insights.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate nutrition overview based on available items
+            const categories = {};
+            fridgeItems.forEach(item => {
+                categories[item.category] = (categories[item.category] || 0) + 1;
+            });
+
+            content.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Inventory Nutrition Profile</h3>
+                    </div>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${categories.vegetables || 0}</div>
+                            <div class="nutrition-label">Vegetables</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${categories.fruits || 0}</div>
+                            <div class="nutrition-label">Fruits</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${categories.dairy || 0}</div>
+                            <div class="nutrition-label">Dairy</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${categories.meat || 0}</div>
+                            <div class="nutrition-label">Proteins</div>
+                        </div>
+                        <div class="nutrition-item">
+                            <div class="nutrition-value">${categories.grains || 0}</div>
+                            <div class="nutrition-label">Grains</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Health Score</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <span class="detail-label">Variety Score:</span>
+                            <span class="detail-value">${Object.keys(categories).length}/11</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Fresh Produce:</span>
+                            <span class="detail-value">${((categories.vegetables || 0) + (categories.fruits || 0))} items</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function analyzeNutrition() {
+            alert('Advanced nutrition analysis feature would provide detailed health insights here.');
+        }
+
+        // Modal and Form Management
+        function openAddItemModal() {
+            currentEditingId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Item';
+            document.getElementById('itemForm').reset();
+
+            // Set default expiry date to 7 days from now
+            const defaultExpiry = new Date();
+            defaultExpiry.setDate(defaultExpiry.getDate() + 7);
+            document.getElementById('itemExpiry').value = defaultExpiry.toISOString().split('T')[0];
+
+            document.getElementById('itemModal').classList.add('active');
+        }
+
+        function editItem(id) {
+            const item = fridgeItems.find(item => item.id === id);
+            if (!item) return;
+
+            currentEditingId = id;
+            document.getElementById('modalTitle').textContent = 'Edit Item';
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemQuantity').value = item.quantity;
+            document.getElementById('itemExpiry').value = item.expiry;
+            document.getElementById('itemLocation').value = item.location || 'fridge';
+            document.getElementById('itemCost').value = item.cost || '';
+            document.getElementById('itemModal').classList.add('active');
+        }
+
+        function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                fridgeItems = fridgeItems.filter(item => item.id !== id);
+                saveToLocalStorage();
+                renderInventory();
+                renderRecipes();
+                renderAnalytics();
+                renderNutrition();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('itemModal').classList.remove('active');
+            currentEditingId = null;
+        }
+
+        // Advanced Features
+        function scanBarcode() {
+            alert('Barcode scanning feature would integrate with device camera for instant item recognition.');
+        }
+
+        function bulkImport() {
+            alert('Bulk import feature would allow CSV/Excel file uploads for easy inventory management.');
+        }
+
+        function exportData() {
+            const data = {
+                fridgeItems,
+                shoppingList,
+                mealPlan,
+                nutritionData,
+                exportDate: new Date().toISOString(),
+                version: '2.0'
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fridgebuddy-pro-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Form Submission
+        document.getElementById('itemForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                id: currentEditingId || generateId(),
+                name: document.getElementById('itemName').value.trim(),
+                category: document.getElementById('itemCategory').value,
+                quantity: document.getElementById('itemQuantity').value.trim(),
+                expiry: document.getElementById('itemExpiry').value,
+                location: document.getElementById('itemLocation').value,
+                cost: document.getElementById('itemCost').value,
+                dateAdded: currentEditingId ? fridgeItems.find(item => item.id === currentEditingId).dateAdded : new Date().toISOString()
+            };
+
+            if (currentEditingId) {
+                const index = fridgeItems.findIndex(item => item.id === currentEditingId);
+                fridgeItems[index] = formData;
+            } else {
+                fridgeItems.push(formData);
+            }
+
+            saveToLocalStorage();
+            closeModal();
+            renderInventory();
+            renderRecipes();
+            renderAnalytics();
+            renderNutrition();
+        });
+
+        // Search Functionality
+        function setupSearchFilters() {
+            const inventorySearch = document.getElementById('inventorySearch');
+            const recipeSearch = document.getElementById('recipeSearch');
+
+            inventorySearch.addEventListener('input', function() {
+                filterInventory(this.value);
+            });
+
+            recipeSearch.addEventListener('input', function() {
+                filterRecipesBySearch(this.value);
+            });
+        }
+
+        function filterInventory(searchTerm) {
+            const cards = document.querySelectorAll('#inventoryGrid .card');
+            cards.forEach(card => {
+                const itemName = card.querySelector('.item-name').textContent.toLowerCase();
+                const isVisible = itemName.includes(searchTerm.toLowerCase());
+                card.style.display = isVisible ? 'block' : 'none';
+            });
+        }
+
+        function filterRecipesBySearch(searchTerm) {
+            const cards = document.querySelectorAll('#recipesGrid .recipe-card');
+            cards.forEach(card => {
+                const recipeName = card.querySelector('.recipe-title').textContent.toLowerCase();
+                const isVisible = recipeName.includes(searchTerm.toLowerCase());
+                card.style.display = isVisible ? 'block' : 'none';
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('itemModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                openAddItemModal();
+            }
+        });
+    </script>
+</body>
+</html>
